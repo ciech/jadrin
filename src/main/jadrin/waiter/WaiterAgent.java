@@ -17,13 +17,13 @@ public class WaiterAgent extends Agent {
        */
     private static final long serialVersionUID = 1L;
 
-    private WaiterAgentGui myGui;
+    private WaiterAgentGui gui;
 
     
     protected void setup() 
     { 
-		myGui = new WaiterAgentGui(this);
-		myGui.showGui();
+		gui = new WaiterAgentGui(this);
+		gui.showGui();
     	
     	DFAgentDescription template = new DFAgentDescription();
 		ServiceDescription templateSd = new ServiceDescription();
@@ -66,4 +66,10 @@ public class WaiterAgent extends Agent {
 			}
 		} );
     }
+
+
+	public void analizeQuestion(String text) {
+		gui.setResponse("Nie mogę Ci pomóc - jestem koniem");
+		
+	}
 }

@@ -5,77 +5,74 @@ import java.awt.event.*;
 import javax.swing.*;
 
 
-public class WaiterAgentGui extends JFrame {
+public final class WaiterAgentGui extends JFrame {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private WaiterAgent myAgent;
+	private WaiterAgent waiter;
+	
+	private JPanel p;
+	private JTextArea question;
+	private JTextArea response;
 	
 	WaiterAgentGui(WaiterAgent a) {
 		super(a.getLocalName());
-		
-		myAgent = a;
-		
-		JPanel p = new JPanel();
+		waiter = a;
+		p = new JPanel();
 		p.setLayout(new BoxLayout(p, BoxLayout.PAGE_AXIS));
-	
 		getContentPane().add(p);
-		
-		JTextArea question = new JTextArea(
-	                "Zadaj kelnerowi pytanie.."
-	        );
-		 question.setFont(new Font("Serif", Font.ITALIC, 12)); 
-		 question.setBorder(
-	            BorderFactory.createCompoundBorder(
-	                BorderFactory.createCompoundBorder(
-	                                BorderFactory.createTitledBorder("Czego chciałbyś się dowiedzieć ?"),
-	                                BorderFactory.createEmptyBorder(5,5,5,5)),
-	                                question.getBorder()));
+		question = new JTextArea("", 1, 50);
+		question.setLineWrap(true);
+		JScrollPane  questionPane = new JScrollPane(question);
+		questionPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		questionPane.setPreferredSize(new Dimension(400, 70));
+		questionPane.setBorder(
+			BorderFactory.createCompoundBorder(
+				BorderFactory.createCompoundBorder(
+					BorderFactory.createTitledBorder("Czego chciałbyś się dowiedzieć ?"),
+	                BorderFactory.createEmptyBorder(5,5,5,5)),
+	                questionPane.getBorder()));
 	 
-	   	 JTextArea response = new JTextArea(
-	                ""
-	        );
-	   	 	response.setFont(new Font("Serif", Font.ITALIC, 12));
-	   	 	response.setLineWrap(true);
-	   	    response.setWrapStyleWord(true);      
-	   	    response.setPreferredSize(new Dimension(250, 250));
-	   	    response.setBorder(
-	            BorderFactory.createCompoundBorder(
-	                BorderFactory.createCompoundBorder(
-	                                BorderFactory.createTitledBorder("Kelner mówi:"),
-	                                BorderFactory.createEmptyBorder(5,5,5,5)),
-	                                response.getBorder()));
-	   	    response.setEditable(false);
-	   	  p.add(response);
-	   	    p.add(question);
+	   	response = new JTextArea("");
+   	 	response.setLineWrap(true);
+   	    response.setWrapStyleWord(false); 
+   	    response.setEditable(false);
+   	    
+   	    JScrollPane  responsePane = new JScrollPane(response);
+	   	responsePane.setPreferredSize(new Dimension(400, 250));
+	   	responsePane.setBorder(
+	   		BorderFactory.createCompoundBorder(
+	   			BorderFactory.createCompoundBorder(
+	   				BorderFactory.createTitledBorder("Historia rozmowy:"),
+	   				BorderFactory.createEmptyBorder(5,5,5,5)),
+	                responsePane.getBorder()));
+
+	   	p.add(responsePane);
+	   	p.add(questionPane);
 	   
 		
-		JButton addButton = new JButton("Wyślij");
-		addButton.addActionListener( new ActionListener() {
-			public void actionPerformed(ActionEvent ev) {
-				try {
-
-						// agent action
+		JButton sendButton = new JButton("Wyślij");
+		sendButton.addActionListener( 
+			new ActionListener() {
+				public void actionPerformed(ActionEvent ev) {
+					String text = question.getText();
+					response.append("Pytanie: " + text + "\n");
+					question.setText("");
+					waiter.analizeQuestion(text);
 				}
-				catch (Exception e) {
-					JOptionPane.showMessageDialog(WaiterAgentGui.this, "Invalid values. "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE); 
-				}
-			}
-		} );
+		});
 		p = new JPanel();
-		p.add(addButton);
+		p.add(sendButton);
 		getContentPane().add(p, BorderLayout.SOUTH);
-		
-		addWindowListener(new	WindowAdapter() {
-			public void windowClosing(WindowEvent e) {
-				myAgent.doDelete();
-			}
-		} );
-		
 		setResizable(false);
+	}
+	
+	public void setResponse(String response)
+	{
+		this.response.append("Kelner: " + response + "\n");
 	}
 	
 	public void showGui() {
