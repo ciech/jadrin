@@ -3,6 +3,7 @@ package main.jadrin.waiter;
 import main.jadrin.ontology.QueryOntology;
 import jade.core.Agent;
 import jade.core.AID;
+import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.SimpleBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
@@ -62,9 +63,6 @@ public class WaiterAgent extends Agent {
 		// select proper bartender.. or ask all of them ?
 		
 		
-		//addBehaviour();
-		
-		gui.setResponse("Nie mogę Ci pomóc - jestem koniem");
-		gui.setEditable(true);
+		addBehaviour(new BuildQueryBehaviour(this,text,bartenders,gui));
 	}
 }

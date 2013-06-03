@@ -20,16 +20,26 @@ public class WhatIsThat extends CyclicBehaviour {
 	@Override
 	public void action() {
 		MessageTemplate mt = MessageTemplate.MatchOntology(QueryOntology.NAME);
-		ACLMessage msg = myAgent.receive(mt);
+		MessageTemplate mt2 = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
+		MessageTemplate mt3 = MessageTemplate.and(mt, mt2);
+		ACLMessage msg = myAgent.blockingReceive(mt3);
 		if (msg != null) {
 			String whatIsThis = msg.getContent();
-			System.out.println("Co to jest: "+whatIsThis+ " ?");
+			String result;
+			if (whatIsThis.equals("mojito"))
+			{
+				result = "drink";
+			}
+			else
+			{
+				result = "unknown";
+			}
 		    ACLMessage reply = msg.createReply();
 		    
 		    // check what means item here
 		    
 		    reply.setPerformative(ACLMessage.INFORM);
-		    reply.setContent("Unknown");
+		    reply.setContent(result);
 		    myAgent.send(reply);
 		}
 		else {
