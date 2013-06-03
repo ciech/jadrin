@@ -2,6 +2,7 @@ package main.jadrin.waiter;
 
 import java.awt.*;
 import java.awt.event.*;
+
 import javax.swing.*;
 
 
@@ -10,7 +11,7 @@ public final class WaiterAgentGui extends JFrame {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -5658252133971369582L;
 
 	private WaiterAgent waiter;
 	
@@ -26,6 +27,28 @@ public final class WaiterAgentGui extends JFrame {
 		getContentPane().add(p);
 		question = new JTextArea("", 1, 50);
 		question.setLineWrap(true);
+		question.requestFocusInWindow();
+		question.addKeyListener(new KeyAdapter(){
+			public void keyReleased(KeyEvent e) {
+				if (KeyEvent.VK_ENTER == e.getKeyCode()) {
+					JTextArea textArea = (JTextArea) e.getSource();
+	            	String text = textArea.getText();
+	            	text = text.substring(0,text.length()-1);
+	               	if (!text.isEmpty() && !text.contains(new String("\n")))
+					{
+						response.append("Pytanie: " + text + "\n");
+						question.setText("");
+						setEditable(false);
+						waiter.analizeQuestion(text);
+					}
+					else
+					{
+						question.setText("");
+					}
+	            }
+	        }
+		});
+		
 		JScrollPane  questionPane = new JScrollPane(question);
 		questionPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		questionPane.setPreferredSize(new Dimension(400, 70));
@@ -54,25 +77,17 @@ public final class WaiterAgentGui extends JFrame {
 	   	p.add(questionPane);
 	   
 		
-		JButton sendButton = new JButton("Wyślij");
-		sendButton.addActionListener( 
-			new ActionListener() {
-				public void actionPerformed(ActionEvent ev) {
-					String text = question.getText();
-					response.append("Pytanie: " + text + "\n");
-					question.setText("");
-					waiter.analizeQuestion(text);
-				}
-		});
-		p = new JPanel();
-		p.add(sendButton);
-		getContentPane().add(p, BorderLayout.SOUTH);
 		setResizable(false);
 	}
 	
 	public void setResponse(String response)
 	{
 		this.response.append("Kelner: " + response + "\n");
+	}
+	
+	public void setEditable(boolean editable)
+	{
+		this.question.setEditable(editable);
 	}
 	
 	public void showGui() {
