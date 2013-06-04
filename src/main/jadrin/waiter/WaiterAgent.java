@@ -11,6 +11,8 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAAgentManagement.Property;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import morfologik.stemming.IStemmer;
+import morfologik.stemming.PolishStemmer;
 
 public class WaiterAgent extends Agent { 
 
@@ -58,7 +60,10 @@ public class WaiterAgent extends Agent {
 				System.out.println("Barman: " + bartender);
 			}
 		}
-		
+				
+		IStemmer stemmer = new PolishStemmer();
+		String[] notPermitted = {"prep"};
+		String[] tokens = Tokenizer.getTokens(stemmer, text, notPermitted);
 		// select proper bartender.. or ask all of them ?
 		
 		
@@ -67,4 +72,6 @@ public class WaiterAgent extends Agent {
 		gui.setResponse("Nie mogę Ci pomóc - jestem koniem");
 		gui.setEditable(true);
 	}
+	
+	
 }

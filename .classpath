@@ -5,5 +5,8 @@
 	<classpathentry kind="lib" path="lib/jade.jar"/>
 	<classpathentry kind="lib" path="lib/commons-codec/commons-codec-1.3.jar"/>
 	<classpathentry kind="lib" path="lib/gnuprologjava-0.2.6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Krzysztof/git/jadrin/lib/morfologik-polish-1.6.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Krzysztof/git/jadrin/lib/morfologik-stemming-1.6.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Krzysztof/git/jadrin/lib/morfologik-fsa-1.6.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
