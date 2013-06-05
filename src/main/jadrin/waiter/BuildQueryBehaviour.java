@@ -1,6 +1,11 @@
 package main.jadrin.waiter;
 
+import java.nio.charset.Charset;
+
 import main.jadrin.ontology.QueryOntology;
+import main.jadrin.tools.Tokenizer;
+import morfologik.stemming.IStemmer;
+import morfologik.stemming.PolishStemmer;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.OneShotBehaviour;
@@ -27,8 +32,13 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 	@Override
 	public void action() {
 		boolean drinkQuery = false;
+		
+		IStemmer stemmer = new PolishStemmer();
+		String[] notPermitted = {"prep"};
+		String[] tokens = Tokenizer.getTokens(stemmer, query, notPermitted);
+		
 		String drink = "";
-		for (String str: query.split("\\s+"))
+		for (String str: tokens)
 		{
 			ACLMessage reply = new ACLMessage(ACLMessage.REQUEST);
 			reply.addReceiver(bartenders[0]);
