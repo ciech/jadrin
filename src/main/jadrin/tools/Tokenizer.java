@@ -10,14 +10,17 @@ public class Tokenizer {
 	public static String[] getTokens(IStemmer s, String sentence, String[] permitted)
 	{
 		ArrayList<String> result = new ArrayList<String>();
-		String[] temp = sentence.split(" ");
+		String[] temp = sentence.split("[ ~@#$^&*()+=\\[\\]{}|\\\\,.?:;,\"]");
 		
 		String[] temp2;
 		for(int i =0; i < temp.length ; i++)
 		 {
+			if(temp[i].length() > 0)
+			{
 			 temp2 = stem(s, temp[i], permitted);
 			 if(temp2.length > 0)
 			    result.add(temp2[0]);
+			}
 		 }
 		
 		return result.toArray(new String[result.size()]);
