@@ -10,9 +10,13 @@ import jade.util.Logger;
 
 public class QueryOntology extends BeanOntology {
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 3117856331840314129L;
+
+	/**
      * 
      */
-    private static final long serialVersionUID = 1L;
     public static final String NAME = "query-ontology";
 
     private static final Ontology instance = new QueryOntology();
@@ -20,13 +24,9 @@ public class QueryOntology extends BeanOntology {
     private QueryOntology() {
         super(NAME);
         try {
-        //	add(PartOfIngredient.class);
-       // 	add(PartOfDrink.class);
-            add(Ingredient.class);
-            add(Drink.class);
-            add(Unknown.class);
+        	add(CheckElement.class);
         } catch (BeanOntologyException ex) {
-            Logger.getLogger(DrinkOntology.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(QueryOntology.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

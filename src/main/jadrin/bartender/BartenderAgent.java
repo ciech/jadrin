@@ -5,11 +5,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import main.jadrin.ontology.CheckElement;
 import main.jadrin.ontology.Drink;
+import main.jadrin.ontology.DrinkOntology;
 import main.jadrin.ontology.Ingredient;
-import main.jadrin.ontology.Unknown;
-
-import gnu.prolog.term.AtomTerm;
+import main.jadrin.ontology.QueryOntology;
+import main.jadrin.ontology.Type;import gnu.prolog.term.AtomTerm;
 import gnu.prolog.term.CompoundTerm;
 import gnu.prolog.term.DoubleQuotesTerm;
 import gnu.prolog.term.IntegerTerm;
@@ -22,6 +23,9 @@ import gnu.prolog.vm.Interpreter.Goal;
 import gnu.prolog.vm.PrologCode;
 import gnu.prolog.vm.PrologException;
 import jade.content.Concept;
+import jade.content.lang.Codec;
+import jade.content.lang.sl.SLCodec;
+import jade.content.onto.Ontology;
 import jade.core.Agent;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
@@ -38,6 +42,12 @@ public class BartenderAgent extends Agent {
 	private static final String SERVICE_NAME = "Bartender";
 	private Environment environment;
 	private Interpreter interpreter;
+	private Codec codec = new SLCodec();
+	private Ontology queryOntology = QueryOntology.getInstance();
+	private Ontology drinkOntology = DrinkOntology.getInstance();
+	
+
+	
 	private void registerService() {
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());
@@ -49,8 +59,7 @@ public class BartenderAgent extends Agent {
 		sd.addProperties(new Property("country", "Poland"));
 		dfd.addServices(sd);
 
-
-		try {
+    	int isDrink = PrologCode.FAIL;		try {
 			DFService.register(this, dfd);
 		}
 		catch (FIPAException e) {
@@ -60,8 +69,17 @@ public class BartenderAgent extends Agent {
 		}
 	}
 
+	public String getCodecName()
+	{
+		return this.codec.getName();
+	}
+	
 	protected void setup() 
 	{ 
+		getContentManager().registerLanguage(codec);
+		getContentManager().registerOntology(queryOntology);
+		getContentManager().registerOntology(drinkOntology);
+		
 		//Prolog setup:
 		this.environment =  new Environment();
 
@@ -83,10 +101,13 @@ public class BartenderAgent extends Agent {
 
 	}
 
-	public Concept whatIsThat(String name){
+	public CheckElement whatIsThat(CheckElement check){
 
-		Term[] args = { AtomTerm.get(name)};
-
+		if (check == null) return new CheckElement();
+		
+		Term[] args = { AtomTerm.get(check.getName())};
+		
+		CheckElement result = check;
 		CompoundTerm goalTermIngredient = new CompoundTerm(AtomTerm.get("is_ingredient"), args);
 		CompoundTerm goalTermDrink = new CompoundTerm(AtomTerm.get("is_drink"), args);
 		int isIngredient = PrologCode.FAIL;
@@ -99,16 +120,22 @@ public class BartenderAgent extends Agent {
 		}
 
 
-		if(isIngredient == PrologCode.SUCCESS)
-			return new Ingredient();
-
-		if(isDrink == PrologCode.SUCCESS)
-			return  new Drink();
-
-		return new Unknown();  	
+		if(isIngredient == PrologCode.SUCCESS){
+			result.setType(Type.INGREDIENT);
+			result.setPartOf(true);
+		    return result;
+		}
+		if(isDrink == PrologCode.SUCCESS) {
+			result.setType(Type.DRINK);
+			result.setPartOf(true);
+	    	return result;
+		}
+		
+		result.setType(Type.UNKNOWN);
+		return result; 	
 	}
 	
-	public List<Drink> getDrinksWithGivenIngredients(String[] ingredients){
+	public LinkedList<Drink> getDrinksWithGivenIngredients(String[] ingredients){
 
 		//		LinkedList<Term> terms = new LinkedList<Term>();
 		LinkedList<Drink> drinkList = new LinkedList<Drink>();
@@ -143,7 +170,7 @@ public class BartenderAgent extends Agent {
 		
 	}
 
-	private Drink createDrink(String drinkName, Term fullIngredientsDeref,
+		private Drink createDrink(String drinkName, Term fullIngredientsDeref,
 			Term recipeDeref) {
 		
 		String ingredients[] = tokenizeIngredients(fullIngredientsDeref);
@@ -158,7 +185,7 @@ public class BartenderAgent extends Agent {
 		return createDrink(drinkName, fullIngredientsDeref, recipeDeref);
 	}
 
-	private String[] tokenizeIngredients(Term fullIngredientsDeref) {
+private String[] tokenizeIngredients(Term fullIngredientsDeref) {
 		String str = fullIngredientsDeref.toString().replace("'", "").replace(",", "").replace("[[", "").replace("]]", "").replace("][", " ");
 		StringTokenizer tokenizer = new StringTokenizer(str.toString(), "[]");
 		ArrayList<String> ingredients = new ArrayList<String> ();
@@ -180,7 +207,7 @@ public class BartenderAgent extends Agent {
 		
 		return stringBuffer.toString();
 	}	
-	
+
 	public Drink getDrinkRecipe(String drinkName){
 		
 		VariableTerm fullIngredientsList = new VariableTerm("FullIngredientsList");

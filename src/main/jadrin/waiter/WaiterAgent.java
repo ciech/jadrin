@@ -1,6 +1,10 @@
 package main.jadrin.waiter;
 
+import main.jadrin.ontology.DrinkOntology;
 import main.jadrin.ontology.QueryOntology;
+import jade.content.lang.Codec;
+import jade.content.lang.sl.SLCodec;
+import jade.content.onto.Ontology;
 import jade.core.Agent;
 import jade.core.AID;
 import jade.core.behaviours.Behaviour;
@@ -18,11 +22,23 @@ public class WaiterAgent extends Agent {
     /**
 	 * 
 	 */
+	private Codec codec = new SLCodec();
+	private Ontology queryOntology = QueryOntology.getInstance();
+	private Ontology drinkOntology = DrinkOntology.getInstance();
+	
 	private static final long serialVersionUID = 1378662441382554121L;
 	private WaiterAgentGui gui;
   
+	public String getCodecName()
+	{
+		return this.codec.getName();
+	}
+	
     protected void setup() 
-    { 
+    {
+    	getContentManager().registerLanguage(codec);
+	    getContentManager().registerOntology(queryOntology);
+	    getContentManager().registerOntology(drinkOntology);
 		gui = new WaiterAgentGui(this);
 		gui.showGui();	
     }
