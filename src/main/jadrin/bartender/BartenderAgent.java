@@ -60,12 +60,13 @@ public class BartenderAgent extends Agent {
 		ServiceDescription sd = new ServiceDescription();
 		sd.setName(SERVICE_NAME);
 		sd.setType("drink-knowledge");
-		sd.addOntologies("jadrin-ontology");
+		sd.addOntologies(QueryOntology.NAME);
+		sd.addOntologies(DrinkOntology.NAME);
 		sd.addLanguages(FIPANames.ContentLanguage.FIPA_SL);
 		sd.addProperties(new Property("country", "Poland"));
 		dfd.addServices(sd);
 
-		int isDrink = PrologCode.FAIL;		try {
+		try {
 			DFService.register(this, dfd);
 		}
 		catch (FIPAException e) {
@@ -101,12 +102,7 @@ public class BartenderAgent extends Agent {
 		//    	
 
 		registerService();
-		addBehaviour(new WhatIsThat(this)); // for NLP on waiter
-		addBehaviour(new GetDrinkRecipe(this)); // A case from documentation
-		addBehaviour(new GetDrinksWithGivenIngredients(this)); // B case from documentation
-		addBehaviour(new GetMissingIngredientsAndRecipe(this)); // C case from documentation 	
-
-
+		addBehaviour(new CommunicateBehaviour(this)); // handles A,B and C case from documentation
 	}
 
 	public CheckElement whatIsThat(CheckElement check){

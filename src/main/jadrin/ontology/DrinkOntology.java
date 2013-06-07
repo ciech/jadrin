@@ -20,6 +20,8 @@ public class DrinkOntology extends BeanOntology {
             add(Recipe.class);
             add(Ingredient.class);
             add(Drink.class);
+            add(DrinkRequest.class);
+            add(DrinkResponse.class);
         } catch (BeanOntologyException ex) {
             Logger.getLogger(DrinkOntology.class.getName()).log(Level.SEVERE, null, ex);
         }
