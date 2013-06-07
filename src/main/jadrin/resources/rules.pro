@@ -17,7 +17,7 @@ deletelist([X|Xs], Y, [X|Zs]) :- deletelist(Xs, Y, Zs).
 %Ptanie zero - co to jest za typ?
 is_ingredient(I) :- ingredients(N, S), member_rec(I,S).
 is_drink(I) :- ingredients(N,S), member_rec(I,N).
-
+is_part_of(I) :- (ingredients(N, S), member_rec(I,S), \+(member(I,S))) ;  ( ingredients(N,S), member_rec(I,N), \+(member(I,N))).
 
 %===
 %A. Pytanie jak robi sie rum z cola?
@@ -31,7 +31,7 @@ what_can_i_do(Ingredient, Drink, List, Recipe) :-  ((ingredients(Drink,List),mem
 what_can_i_do([Ingredient|Tail],Drink,List, Recipe) :-  (ingredients(Drink,List), member(Ingredient,List)), what_can_i_do(Tail, Drink, List,Recipe ), recipe(Drink,Recipe).
 
 %Zwraca wszystkie drinki ktore wykorzystuja ktorykolwiek skladnik
-what_can_i_do2([Ingredient|Tail],Drink,List) :-  (ingredients(Drink,List), (member(Ingredient,List)) ; what_can_i_do2(Tail, Drink, List)).
+%what_can_i_do2([Ingredient|Tail],Drink,List) :-  (ingredients(Drink,List), (member(Ingredient,List)) ; what_can_i_do2(Tail, Drink, List)).
 
 %===
 %C. Mam cole i whisky czego mi brakuje do whisky z lodem? Zwaraca prawidlowy wynik lezeli mamy wiecej skladnikow niz jest w przepisie.
