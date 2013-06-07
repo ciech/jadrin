@@ -51,9 +51,7 @@ public class WhatIsThat extends CyclicBehaviour {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			
-			
+					
 			CheckElement result = bartender.whatIsThat(toCheck);	
 	
 			ACLMessage reply = msg.createReply();

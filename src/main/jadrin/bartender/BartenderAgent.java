@@ -105,29 +105,37 @@ public class BartenderAgent extends Agent {
 
 		if (check == null) return new CheckElement();
 		
-		Term[] args = { AtomTerm.get(check.getName())};
-		
+		Term[] args = {buildTerm(check.getName())};
+		//Term[] args = {AtomTerm.get(check.getName())};
 		CheckElement result = check;
 		CompoundTerm goalTermIngredient = new CompoundTerm(AtomTerm.get("is_ingredient"), args);
 		CompoundTerm goalTermDrink = new CompoundTerm(AtomTerm.get("is_drink"), args);
+		CompoundTerm goalTermPartOf = new CompoundTerm(AtomTerm.get("is_part_of"), args);
+
 		int isIngredient = PrologCode.FAIL;
 		int isDrink = PrologCode.FAIL;
+		int isPartOf =PrologCode.FAIL;
 		try {
 			isIngredient = interpreter.runOnce(goalTermIngredient);
-			isDrink = interpreter.runOnce(goalTermDrink);			
+			isDrink = interpreter.runOnce(goalTermDrink);
+			isPartOf = interpreter.runOnce(goalTermPartOf);			
+
 		} catch (PrologException e) {
 			e.printStackTrace();
 		}
 
-
+		result.setPartOf(false);	
+		if(isPartOf ==  PrologCode.SUCCESS){
+			result.setPartOf(true);	
+		}
+		
+		
 		if(isIngredient == PrologCode.SUCCESS){
 			result.setType(Type.INGREDIENT);
-			result.setPartOf(true);
 		    return result;
 		}
 		if(isDrink == PrologCode.SUCCESS) {
 			result.setType(Type.DRINK);
-			result.setPartOf(true);
 	    	return result;
 		}
 		
