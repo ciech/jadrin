@@ -45,9 +45,9 @@ public class BartenderAgent extends Agent {
 	private Codec codec = new SLCodec();
 	private Ontology queryOntology = QueryOntology.getInstance();
 	private Ontology drinkOntology = DrinkOntology.getInstance();
-	
 
-	
+
+
 	private void registerService() {
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());
@@ -59,7 +59,7 @@ public class BartenderAgent extends Agent {
 		sd.addProperties(new Property("country", "Poland"));
 		dfd.addServices(sd);
 
-    	int isDrink = PrologCode.FAIL;		try {
+		int isDrink = PrologCode.FAIL;		try {
 			DFService.register(this, dfd);
 		}
 		catch (FIPAException e) {
@@ -73,13 +73,13 @@ public class BartenderAgent extends Agent {
 	{
 		return this.codec.getName();
 	}
-	
+
 	protected void setup() 
 	{ 
 		getContentManager().registerLanguage(codec);
 		getContentManager().registerOntology(queryOntology);
 		getContentManager().registerOntology(drinkOntology);
-		
+
 		//Prolog setup:
 		this.environment =  new Environment();
 
@@ -91,7 +91,7 @@ public class BartenderAgent extends Agent {
 		this.interpreter = environment.createInterpreter();
 		environment.runInitialization(interpreter);
 		//    	
-		
+
 		registerService();
 		addBehaviour(new WhatIsThat(this)); // for NLP on waiter
 		addBehaviour(new GetDrinkRecipe(this)); // A case from documentation
@@ -104,7 +104,7 @@ public class BartenderAgent extends Agent {
 	public CheckElement whatIsThat(CheckElement check){
 
 		if (check == null) return new CheckElement();
-		
+
 		Term[] args = {buildTerm(check.getName())};
 		//Term[] args = {AtomTerm.get(check.getName())};
 		CheckElement result = check;
@@ -128,80 +128,81 @@ public class BartenderAgent extends Agent {
 		if(isPartOf ==  PrologCode.SUCCESS){
 			result.setPartOf(true);	
 		}
-		
-		
+
+
 		if(isIngredient == PrologCode.SUCCESS){
 			result.setType(Type.INGREDIENT);
-		    return result;
+			return result;
 		}
 		if(isDrink == PrologCode.SUCCESS) {
 			result.setType(Type.DRINK);
-	    	return result;
+			return result;
 		}
-		
+
 		result.setType(Type.UNKNOWN);
 		return result; 	
 	}
-	
+
 	public LinkedList<Drink> getDrinksWithGivenIngredients(String[] ingredients){
 
 		//		LinkedList<Term> terms = new LinkedList<Term>();
 		LinkedList<Drink> drinkList = new LinkedList<Drink>();
 		for (String ingredient : ingredients) {
-		
+
 			Term ingredientTerm = buildTermList(ingredient);
-			
+
 			VariableTerm drinkName = new VariableTerm("DrinkName");
 			VariableTerm fullIngredientsList = new VariableTerm("FullIngredientsList");
 			VariableTerm recipe = new VariableTerm("Recipe");
 
 			Term[] args = { ingredientTerm , drinkName, fullIngredientsList,recipe };
-	
+
 			CompoundTerm goalTerm = new CompoundTerm(AtomTerm.get("what_can_i_do"), args);
 			Interpreter.Goal goal= interpreter.prepareGoal(goalTerm);
 
 			int rc;
 			try {
-				do{
-					rc = interpreter.execute(goal);
+				rc = interpreter.execute(goal);
+				while(rc == PrologCode.SUCCESS || rc == PrologCode.SUCCESS_LAST){
 					//rc = interpreter.runOnce(goalTerm);
 					Term drinkDeref  = drinkName.dereference();
 					Term fullIngredientsDeref = fullIngredientsList.dereference();
 					Term recipeDeref = recipe.dereference();	
 					drinkList.add(createDrink(drinkDeref,fullIngredientsDeref,recipeDeref ));
-				}while(rc == PrologCode.SUCCESS || rc == PrologCode.SUCCESS_LAST);
+					rc = interpreter.execute(goal);
+				}
 			} catch (PrologException e) {
 				e.printStackTrace();
 			}	
 		}
 		return drinkList;
-		
+
 	}
 
-		private Drink createDrink(String drinkName, Term fullIngredientsDeref,
+	private Drink createDrink(String drinkName, Term fullIngredientsDeref,
 			Term recipeDeref) {
-		
+
 		String ingredients[] = tokenizeIngredients(fullIngredientsDeref);
 		String recipe = tokenizeTerm(recipeDeref).replace("\\x20\\", " ");
 		return new Drink(drinkName, ingredients, recipe);
 	}
-	
+
 	private Drink createDrink(Term drinkDeref, Term fullIngredientsDeref,
 			Term recipeDeref) {
-		
+
 		String drinkName = tokenizeTerm(drinkDeref);
 		return createDrink(drinkName, fullIngredientsDeref, recipeDeref);
 	}
 
-private String[] tokenizeIngredients(Term fullIngredientsDeref) {
+	private String[] tokenizeIngredients(Term fullIngredientsDeref) {
 		String str = fullIngredientsDeref.toString().replace("'", "").replace(",", "").replace("[[", "").replace("]]", "").replace("][", " ");
 		StringTokenizer tokenizer = new StringTokenizer(str.toString(), "[]");
 		ArrayList<String> ingredients = new ArrayList<String> ();
-		
+
 		while(tokenizer.hasMoreTokens()){
 			ingredients.add(tokenizer.nextToken());
 		}
-		
+
 		return ingredients.toArray(new String[ingredients.size()]);
 	}
 
@@ -212,68 +213,73 @@ private String[] tokenizeIngredients(Term fullIngredientsDeref) {
 			stringBuffer.append(tokenizer.nextToken());
 			stringBuffer.append(" ");
 		}
-		
+
 		return stringBuffer.toString();
 	}	
 
 	public Drink getDrinkRecipe(String drinkName){
-		
+
 		VariableTerm fullIngredientsList = new VariableTerm("FullIngredientsList");
 		VariableTerm recipe = new VariableTerm("Recipe");
-		Term drinkTerm = buildTermList(drinkName);
+		Term drinkTerm = buildTerm(drinkName);
 		Term[] args1 = { drinkTerm, fullIngredientsList};	
 		CompoundTerm goalTermIngredients = new CompoundTerm(AtomTerm.get("ingredients"), args1);
 		Term[] args2 = { drinkTerm, recipe};	
 		CompoundTerm goalTermRecipe= new CompoundTerm(AtomTerm.get("recipe"), args2);
-	
+		int rc1 = PrologCode.FAIL;
+		int rc2 = PrologCode.FAIL;
 		try {
-			interpreter.runOnce(goalTermIngredients);	
-			interpreter.runOnce(goalTermRecipe);	
+			rc1 = interpreter.runOnce(goalTermIngredients);	
+			rc2 = interpreter.runOnce(goalTermRecipe);	
 		} catch (PrologException e) {
 			e.printStackTrace();
 		}
-		
-		Term fullIngredientsDeref = fullIngredientsList.dereference();
-		Term recipeDeref = recipe.dereference();
-		return createDrink(drinkName, fullIngredientsDeref, recipeDeref);
-	}
 
+		if((rc2 ==PrologCode.SUCCESS || rc2 == PrologCode.SUCCESS_LAST) 
+				&& (rc1 ==PrologCode.SUCCESS || rc1 == PrologCode.SUCCESS_LAST)){
+			Term fullIngredientsDeref = fullIngredientsList.dereference();
+			Term recipeDeref = recipe.dereference();
+			return createDrink(drinkName, fullIngredientsDeref, recipeDeref);
+		}
+
+		return null;
+	}
 	/**
 	 * 
 	 * @param ingredients
 	 * @return Drink object with ingredients containing only missing ones, proper name, recipe
 	 */
 	public Drink getMissingIngredientsAndRecipe(String[] ingredients , String drinkName){
-		
+
 		VariableTerm missingIngredients = new VariableTerm("MissingIngredients");
 		VariableTerm recipe = new VariableTerm("Recipe");
-		Term drinkTerm = buildTermList(drinkName);
-//		Term drinkTerm
-		
-//		Term[] args1 = { drinkTerm, fullIngredientsList};	
-//		CompoundTerm goalTermIngredients = new CompoundTerm(AtomTerm.get("ingredients"), args1);
-//		Term[] args2 = { drinkTerm, recipe};	
-//		CompoundTerm goalTermRecipe= new CompoundTerm(AtomTerm.get("recipe"), args2);
-//	
-//		try {
-//			interpreter.runOnce(goalTermIngredients);	
-//			interpreter.runOnce(goalTermRecipe);	
-//		} catch (PrologException e) {
-//			e.printStackTrace();
-//		}
-//		
-//		Term fullIngredientsDeref = fullIngredientsList.dereference();
-//		Term recipeDeref = recipe.dereference();
-//	
+
+		Term drinkTerm = buildTerm(drinkName);
+		Term ingredientsTerm = buildTermList(ingredients);
+
+		Term[] args1 = { ingredientsTerm, drinkTerm, missingIngredients, recipe };	
+		CompoundTerm goalTermMissingIngredients= new CompoundTerm(AtomTerm.get("what_is_missing"), args1);
+		int rc = PrologCode.FAIL;
+		try {
+			rc = interpreter.runOnce(goalTermMissingIngredients);		
+		} catch (PrologException e) {
+			e.printStackTrace();
+		}
+
+		if(rc ==PrologCode.SUCCESS || rc == PrologCode.SUCCESS_LAST){
+			Term missingIngredientsDeref = missingIngredients.dereference();
+			Term recipeDeref = recipe.dereference();		
+			return createDrink(drinkName,missingIngredients, recipeDeref);
+		}
 		return null;
 	}
-	
+
 	private Term buildTerm(String termStr) {
 		List<Term> terms = new LinkedList<Term>();
 		terms.add(AtomTerm.get(termStr) );
 		return CompoundTerm.getList(terms); 
 	}
-		
+
 	private Term buildTermList(String str) {
 		StringTokenizer tokenizer = new StringTokenizer(str);
 		List<Term> terms = new LinkedList<Term>();
@@ -282,5 +288,13 @@ private String[] tokenizeIngredients(Term fullIngredientsDeref) {
 		}
 		return CompoundTerm.getList(terms); 
 	}
-	
+
+	private Term buildTermList(String[] str) {
+		List<Term> terms = new LinkedList<Term>();
+		for (String string : str) {
+			terms.add(buildTerm(string) );
+		}
+		return CompoundTerm.getList(terms); 
+	}
+
 }

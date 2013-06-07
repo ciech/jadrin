@@ -36,7 +36,7 @@ what_can_i_do([Ingredient|Tail],Drink,List, Recipe) :-  (ingredients(Drink,List)
 %===
 %C. Mam cole i whisky czego mi brakuje do whisky z lodem? Zwaraca prawidlowy wynik lezeli mamy wiecej skladnikow niz jest w przepisie.
 
-what_is_missing(I,D, R) :-  ingredients(D,L), deletelist(L,I, R).
+what_is_missing(I,D, Missing, Recipe) :-  ingredients(D,L), deletelist(L,I, Missing), recipe(D,Recipe).
 
 
 

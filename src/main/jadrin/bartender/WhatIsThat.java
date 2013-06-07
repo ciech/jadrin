@@ -1,6 +1,9 @@
 package main.jadrin.bartender;
 
+import java.util.LinkedList;
+
 import main.jadrin.ontology.CheckElement;
+import main.jadrin.ontology.Drink;
 import main.jadrin.ontology.QueryOntology;
 import jade.content.AgentAction;
 import jade.content.ContentElement;
@@ -53,7 +56,12 @@ public class WhatIsThat extends CyclicBehaviour {
 			}
 					
 			CheckElement result = bartender.whatIsThat(toCheck);	
-	
+//			String [] s ={"wodka"} ; 
+//			LinkedList<Drink> d0 =  bartender.getDrinksWithGivenIngredients(s);
+//			Drink d1 =  bartender.getDrinkRecipe("Mojito");
+//			String [] s1 ={"rum"} ;
+//			Drink d2 =  bartender.getMissingIngredientsAndRecipe(s1,"Mojito");
+			
 			ACLMessage reply = msg.createReply();
 			AgentAction act = result;
 			Action actOperator = new Action(msg.getSender(), act);
