@@ -26,11 +26,11 @@ public class WhatIsThat extends CyclicBehaviour {
 		ACLMessage msg = myAgent.blockingReceive(mt3);
 		if (msg != null) {
 			String objectName = msg.getContent();
-//			String result = bartender.whatIsThat(objectName);
+			Object o = bartender.whatIsThat(objectName);
 			String result = null;
 			String[] test = {"wodka"};
-			bartender.getDrinksWithGivenIngredients(test);
-			
+			Object o1 = bartender.getDrinksWithGivenIngredients(test);
+			Object o2 = bartender.getDrinkRecipe("Wsciekly Pies");
 			ACLMessage reply = msg.createReply();
 
 			reply.setPerformative(ACLMessage.INFORM);
