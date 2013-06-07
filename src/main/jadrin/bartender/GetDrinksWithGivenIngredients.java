@@ -1,5 +1,6 @@
 package main.jadrin.bartender;
 
+import gnu.prolog.vm.Environment;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 
@@ -12,6 +13,7 @@ public class GetDrinksWithGivenIngredients extends CyclicBehaviour {
 
 	public GetDrinksWithGivenIngredients(Agent agent) {
 		super(agent);
+		new Environment();
 	}
 
 	@Override
