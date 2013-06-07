@@ -147,12 +147,13 @@ public class BartenderAgent extends Agent {
 		return result; 	
 	}
 
-	public LinkedList<Drink> getDrinksWithGivenIngredients(String[] ingredients){
+	public LinkedList<Drink> getDrinksWithGivenIngredients(ArrayList<Ingredient> ingredientsArray){
 
 		//		LinkedList<Term> terms = new LinkedList<Term>();
 		LinkedList<Drink> drinkList = new LinkedList<Drink>();
-		for (String ingredient : ingredients) {
-
+		
+		for (Ingredient ing : ingredientsArray) {
+			String ingredient = ing.getName();
 			Term ingredientTerm = buildTermList(ingredient);
 
 			VariableTerm drinkName = new VariableTerm("DrinkName");
@@ -250,16 +251,15 @@ public class BartenderAgent extends Agent {
 	}
 	/**
 	 * 
-	 * @param ingredients
+	 * @param arrayList
 	 * @return Drink object with ingredients containing only missing ones, proper name, recipe
 	 */
-	public Drink getMissingIngredientsAndRecipe(String[] ingredients , String drinkName){
-
+	public Drink getMissingIngredientsAndRecipe(ArrayList<Ingredient> arrayList , String drinkName){
 		VariableTerm missingIngredients = new VariableTerm("MissingIngredients");
 		VariableTerm recipe = new VariableTerm("Recipe");
 
 		Term drinkTerm = buildTerm(drinkName);
-		Term ingredientsTerm = buildTermList(ingredients);
+		Term ingredientsTerm = buildTermList(arrayList);
 
 		Term[] args1 = { ingredientsTerm, drinkTerm, missingIngredients, recipe };	
 		CompoundTerm goalTermMissingIngredients= new CompoundTerm(AtomTerm.get("what_is_missing"), args1);
@@ -276,6 +276,15 @@ public class BartenderAgent extends Agent {
 			return createDrink(drinkName,missingIngredients, recipeDeref);
 		}
 		return null;
+	}
+
+	private Term buildTermList(ArrayList<Ingredient> arrayList) {
+		
+		String[] str = new String [arrayList.size()];
+		for(int i = 0 ; i<arrayList.size(); i++ ){
+			str[i]= arrayList.get(i).getName();
+		}
+		return buildTermList(str);
 	}
 
 	private Term buildTerm(String termStr) {

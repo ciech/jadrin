@@ -1,6 +1,7 @@
 package main.jadrin.bartender;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import main.jadrin.ontology.CheckElement;
 import main.jadrin.ontology.Drink;
@@ -8,6 +9,7 @@ import main.jadrin.ontology.DrinkOntology;
 import main.jadrin.ontology.DrinkRequest;
 import main.jadrin.ontology.DrinkResponse;
 import main.jadrin.ontology.DrinkResponseType;
+import main.jadrin.ontology.Ingredient;
 import jade.content.AgentAction;
 import jade.content.ContentElement;
 import jade.content.lang.Codec.CodecException;
@@ -35,22 +37,30 @@ public class HandleDrinkRequest extends OneShotBehaviour {
 		try {
 			ContentElement ce = myAgent.getContentManager().extractContent(msg);
 			DrinkRequest request = (DrinkRequest)((Action) ce).getAction(); 
-
+			BartenderAgent bartender = (BartenderAgent) myAgent;
+			DrinkResponse response = new DrinkResponse();
+			response.setType(DrinkResponseType.UNKNOWN);
+			Drink drink;
 			switch(request.getType())
 			{
 			case FROM_INGREDIENTS:
+				LinkedList<Drink> drinks = bartender.getDrinksWithGivenIngredients(request.getAskFor().getIngredients());	
+				fillResponse(drinks, response);
 				break;
 			case FROM_NAME:
+				drink = bartender.getDrinkRecipe(request.getAskFor().getName());
+				fillResponse(drink, response);
 				break;
 			case FROM_NAME_AND_INGREDIENTS:
+				drink = bartender.getMissingIngredientsAndRecipe(request.getAskFor().getIngredients(), request.getAskFor().getName());
+				fillResponse(drink, response);
 				break;
 			default:
 				break;
 				
 			}
 
-			DrinkResponse response = new DrinkResponse();
-			response.setType(DrinkResponseType.UNKNOWN);
+		
 			ACLMessage reply = msg.createReply();
 			AgentAction act = response;
 			Action actOperator = new Action(msg.getSender(), act);
@@ -69,5 +79,30 @@ public class HandleDrinkRequest extends OneShotBehaviour {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+	}
+
+	private void fillResponse(Drink drink, DrinkResponse response) {
+		if(drink != null){
+			response.setType(DrinkResponseType.SINGLE_MATCH);
+			response.setAskFor(drink);
+		}else
+			response.setType(DrinkResponseType.UNKNOWN);	
+	}
+
+	private void fillResponse(LinkedList<Drink> drinks, DrinkResponse response) {
+		switch (drinks.size()) {
+		case 0:
+			response.setType(DrinkResponseType.UNKNOWN);
+			break;
+		case 1:
+			response.setType(DrinkResponseType.SINGLE_MATCH);
+			response.setAskFor(drinks.get(0));
+			break;
+		default:
+			response.setType(DrinkResponseType.MULTI_MATCH);
+			response.setResults(drinks);
+			break;
+		}
+		
 	}
 }
