@@ -31,21 +31,24 @@ public final class WaiterAgentGui extends JFrame {
 		question.addKeyListener(new KeyAdapter(){
 			public void keyReleased(KeyEvent e) {
 				if (KeyEvent.VK_ENTER == e.getKeyCode()) {
-					JTextArea textArea = (JTextArea) e.getSource();
-	            	String text = textArea.getText();
-	            	text = text.substring(0,text.length()-1);
-	               	if (!text.isEmpty() && !text.contains(new String("\n")))
+					if (question.isEditable())
 					{
-						response.append("Pytanie: " + text + "\n");
-						question.setText("");
-						setEditable(false);
-						waiter.analizeQuestion(text);
+						JTextArea textArea = (JTextArea) e.getSource();
+		            	String text = textArea.getText();
+		            	text = text.substring(0,text.length()-1);
+		               	if (!text.isEmpty() && !text.contains(new String("\n")))
+						{
+							response.append("Pytanie: " + text + "\n");
+							question.setText("");
+							setEditable(false);
+							waiter.analizeQuestion(text);
+						}
+						else
+						{
+							question.setText("");
+						}
 					}
-					else
-					{
-						question.setText("");
-					}
-	            }
+				}
 	        }
 		});
 		

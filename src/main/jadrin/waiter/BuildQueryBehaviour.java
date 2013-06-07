@@ -68,42 +68,46 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 				Action actOperator = new Action(bartender, act);
 				try {
 					myAgent.getContentManager().fillContent(query,actOperator);
-				   }
-				   catch (Exception ex) { ex.printStackTrace(); }
+				}
+				catch (Exception ex) {
+					ex.printStackTrace();
+				}
+				
 				query.addReceiver(bartender);
 				myAgent.send(query);
-				ACLMessage msg = myAgent.blockingReceive(MessageTemplate.MatchPerformative(ACLMessage.INFORM));
-			
-							try {
-						ContentElement ce =  myAgent.getContentManager().extractContent(msg);
-						if (ce instanceof Action)
-						{
-							 toCheck = (CheckElement)((Action) ce).getAction(); 
-						}
-			
-					} catch (UngroundedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (CodecException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (OntologyException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-							
-					if (toCheck != null && toCheck.getType() == Type.DRINK)
+				MessageTemplate messType = MessageTemplate.MatchPerformative(ACLMessage.INFORM);
+				MessageTemplate ontoType = MessageTemplate.MatchOntology(QueryOntology.NAME);
+				
+				ACLMessage msg = myAgent.blockingReceive(MessageTemplate.and(messType,ontoType));
+				try {
+					ContentElement ce =  myAgent.getContentManager().extractContent(msg);
+					if (ce instanceof Action)
 					{
-						drinkQuery=true;
-						drink = toCheck.getName();
+						 toCheck = (CheckElement)((Action) ce).getAction(); 
 					}
-					else if (toCheck != null && toCheck.getType() == Type.INGREDIENT)
-					{
-						ingredientQuery=true;
-						if(!ingredients.contains(toCheck.getName()))
-							ingredients.add(toCheck.getName());
-					}
-					query.removeReceiver(bartender);
+				} catch (UngroundedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (CodecException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (OntologyException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+						
+				if (toCheck != null && toCheck.getType() == Type.DRINK)
+				{
+					drinkQuery=true;
+					drink = toCheck.getName();
+				}
+				else if (toCheck != null && toCheck.getType() == Type.INGREDIENT)
+				{
+					ingredientQuery=true;
+					if(!ingredients.contains(toCheck.getName()))
+						ingredients.add(toCheck.getName());
+				}
+				query.removeReceiver(bartender);
 			}
 				
 		}

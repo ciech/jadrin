@@ -68,17 +68,12 @@ public class WaiterAgent extends Agent {
 
 	public void analizeQuestion(String text) {
 		AID bartenders[] = getBartendersList();
-		if (bartenders != null)
-		{
-			for (AID bartender : bartenders)
-			{
-				System.out.println("Barman: " + bartender);
-			}
+		if (bartenders != null) {
+			addBehaviour(new BuildQueryBehaviour(this,text,bartenders,gui));
+	
 		}
-		
-		// select proper bartender.. or ask all of them ?
-		
-		
-		addBehaviour(new BuildQueryBehaviour(this,text,bartenders,gui));
+		else {
+			gui.setResponse("Nie udało mi się znaleźć żadnego Barmana");
+		}
 	}
 }

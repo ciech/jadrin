@@ -94,11 +94,7 @@ public class BartenderAgent extends Agent {
 		//    	
 
 		registerService();
-		addBehaviour(new WhatIsThat(this)); // for NLP on waiter
-		addBehaviour(new HandleDrinkRequest(this)); // handles A,B and C case from documentation
-
-
-
+		addBehaviour(new CommunicateBehaviour(this)); // handles A,B and C case from documentation
 	}
 
 	public CheckElement whatIsThat(CheckElement check){
