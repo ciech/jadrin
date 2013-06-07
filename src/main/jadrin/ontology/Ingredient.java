@@ -25,5 +25,6 @@ public class Ingredient implements Concept {
     public void setAmount(Integer amout){
         this.amount = amout;
     }
+    
 }
 
