@@ -12,7 +12,7 @@ public class WhatIsThat extends CyclicBehaviour {
 	 * 
 	 */
 	private static final long serialVersionUID = -4871623810810380962L;
-	
+
 	WhatIsThat(BartenderAgent agent) {
 		super(agent);
 	}
@@ -26,24 +26,14 @@ public class WhatIsThat extends CyclicBehaviour {
 		ACLMessage msg = myAgent.blockingReceive(mt3);
 		if (msg != null) {
 			String objectName = msg.getContent();
-			bartender.whatIsThat(objectName);
-			String result;
-			if (objectName.equals("mojito"))
-			{
-				result = "drink";
-			}
-			else
-			{
-				result = "unknown";
-			}
-		    ACLMessage reply = msg.createReply();
-		    
-		    // check what means item here
-		    
-		    reply.setPerformative(ACLMessage.INFORM);
-		    reply.setContent(result);
-		    reply.setContent(result);
-		    myAgent.send(reply);
+			String result = bartender.whatIsThat(objectName);
+
+			ACLMessage reply = msg.createReply();
+
+			reply.setPerformative(ACLMessage.INFORM);
+			reply.setContent(result);
+			reply.setContent(result);
+			myAgent.send(reply);
 		}
 		else {
 			block();

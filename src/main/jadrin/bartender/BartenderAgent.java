@@ -1,4 +1,6 @@
 package main.jadrin.bartender;
+import java.net.URL;
+
 import gnu.prolog.term.AtomTerm;
 import gnu.prolog.term.CompoundTerm;
 import gnu.prolog.term.DoubleQuotesTerm;
@@ -58,8 +60,12 @@ public class BartenderAgent extends Agent {
       	
       	//Prolog setup:
       	this.environment =  new Environment();
-      	environment.ensureLoaded(AtomTerm.get("/jadrin/res/knowledge.pl"));
-      	environment.ensureLoaded(AtomTerm.get("/jadrin/res/rules.pl"));
+      	
+      	URL knowledgeFile = getClass().getResource("/main/jadrin/resources/knowledge.pro");
+      	URL rulesFile = getClass().getResource("/main/jadrin/resources/rules.pro");
+      	environment.ensureLoaded(AtomTerm.get(knowledgeFile.getFile()));
+      	environment.ensureLoaded(AtomTerm.get(rulesFile.getFile()));
+      	
       	this.interpreter = environment.createInterpreter();
       	environment.runInitialization(interpreter);
       	//    	
@@ -67,22 +73,26 @@ public class BartenderAgent extends Agent {
     
     public String whatIsThat(String name){
     	
-//    	Term[] args = { AtomTerm.get(name)};
-//    	try {
-//    		//CompoundTerm goalTerm = CompoundTerm
-////    		CompoundTerm goalTerm = CompoundTerm(AtomTerm.get("is_ingredient"), args);
-//    	//	int rc = interpreter.execute(goalTerm);
-////    		PrologCode.SUCCESS;0
-////    		PrologCode.SUCCESS_LAST;1
-////    		 PrologCode.FAIL; -1
-////    		 PrologCode.HALT; -2
-//    		int i = 0;
-//    		i++;
-//		} catch (PrologException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//    	
+    	Term[] args = { AtomTerm.get(name)};
+
+    	CompoundTerm goalTermIngredient = new CompoundTerm(AtomTerm.get("is_ingredient"), args);
+    	CompoundTerm goalTermDrink = new CompoundTerm(AtomTerm.get("is_drink"), args);
+    	int isIngredient = PrologCode.FAIL;
+    	int isDrink = PrologCode.FAIL;
+		try {
+			isIngredient = interpreter.runOnce(goalTermIngredient);
+			isDrink = interpreter.runOnce(goalTermDrink);			
+		} catch (PrologException e) {
+			e.printStackTrace();
+		}
+
+		
+		if(isIngredient == PrologCode.SUCCESS)
+			return "ingredient";
+
+		if(isDrink == PrologCode.SUCCESS)
+			return "drink";
+		
     	return null;
     	
     }

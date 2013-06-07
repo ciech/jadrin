@@ -18,12 +18,13 @@ deletelist([X|Xs], Y, [X|Zs]) :- deletelist(Xs, Y, Zs).
 is_ingredient(I) :- ingredients(N, S), member_rec(I,S).
 is_drink(I) :- ingredients(N,S), member_rec(I,N).
 
-%===
-%A. Pytanie jak robi się rum z colą?
-%wystarczy ingredients([['Wsciekly'],['Pies']], X). + zwrócić przepis.
 
 %===
-%B. Mam składnik1 i składnik2, co mogę zrobić? 
+%A. Pytanie jak robi sie rum z cola?
+%wystarczy ingredients([['Wsciekly'],['Pies']], X). + zwrocic przepis.
+
+%===
+%B. Mam skladnik1 i skladnik2, co moge zrobic? 
 
 %Zwraca tylko te drinki,ktore wykorzystuja wszystkie podane skladniki
 what_can_i_do(I, D, L) :-  ((ingredients(D,L),member(I,L)) ; length(I,0)).
