@@ -33,7 +33,6 @@ public class HandleCheckElement extends OneShotBehaviour {
 	@Override
 	public void action() {
 		try {
-			System.out.println("HandleCheckElement start");
 			ContentElement ce =  myAgent.getContentManager().extractContent(msg);
 			CheckElement toCheck = (CheckElement)((Action) ce).getAction(); 
 			
@@ -54,7 +53,6 @@ public class HandleCheckElement extends OneShotBehaviour {
 			reply.setOntology(QueryOntology.NAME);
 			reply.setPerformative(ACLMessage.INFORM);
 			myAgent.send(reply);
-			System.out.println("HandleCheckElement done");
 			
 		} catch (UngroundedException e1) {
 			// TODO Auto-generated catch block
