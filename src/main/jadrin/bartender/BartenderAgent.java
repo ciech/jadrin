@@ -72,7 +72,7 @@ public class BartenderAgent extends Agent {
     }
     
     public String whatIsThat(String name){
-    	
+  	
     	Term[] args = { AtomTerm.get(name)};
 
     	CompoundTerm goalTermIngredient = new CompoundTerm(AtomTerm.get("is_ingredient"), args);
@@ -93,8 +93,34 @@ public class BartenderAgent extends Agent {
 		if(isDrink == PrologCode.SUCCESS)
 			return "drink";
 		
-    	return null;
-    	
+    	return "uknown";  	
     }
-
+    
+   public String[] getDrinksWithGivenIngredients(String[] ingredients){
+	  
+	   
+	   
+	   String [] ret = new String[1];
+	   ret[0] = "uknown";  	
+	   return ret;
+   }
+   
+   public String[] getDrinkRecipe(String[] ingredients){
+	  
+	   
+	   
+	   String [] ret = new String[1];
+	   ret[0] = "uknown";  	
+	   return ret;
+   }
+   
+   public String[] getMissingIngredientsAndRecipe(String[] ingredients){
+	  
+	   
+	   
+	   String [] ret = new String[1];
+	   ret[0] = "uknown";  	
+	   return ret;
+   }
+   
 }

@@ -8,3 +8,9 @@ ingredients([['Lagodny'],['Pies']]	,[['wodka'],[['sok'], ['malinowy']],['tabasko
 
 
 
+recepie([['Wsciekly'],['Pies']]	,['wymieszaj wszystko']).
+recepie([['Wolski'],['Kafar']]	,['wymieszaj wszystko']).
+recepie(['Mojito'],[['rum']		,['wymieszaj wszystko']).
+recepie([['White'],['Malibu']]	,['wymieszaj wszystko']).
+recepie([['Black'],['Malibu']]	,['wymieszaj wszystko']).
+recepie([['Lagodny'],['Pies']]	,['wymieszaj wszystko']).
