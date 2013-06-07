@@ -2,13 +2,17 @@
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import main.jadrin.ontology.CheckElement;
 import main.jadrin.ontology.Drink;
 import main.jadrin.ontology.DrinkRequest;
 import main.jadrin.ontology.DrinkRequestType;
+import main.jadrin.ontology.DrinkResponse;
+import main.jadrin.ontology.DrinkResponseType;
 import main.jadrin.ontology.Ingredient;
 import main.jadrin.ontology.QueryOntology;
+import main.jadrin.ontology.Recipe;
 import main.jadrin.ontology.Type;
 import main.jadrin.tools.Tokenizer;
 import morfologik.stemming.IStemmer;
@@ -109,14 +113,14 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 		}
 		
 		String result = "";
-		
+		Drink d = new Drink();
+		DrinkRequest dRequest = new DrinkRequest();
+		LinkedList<Drink> drinks = null;
 		if (drinkQuery && !ingredientQuery)
 		{
 			result = "Spytałeś o skład " + drink;
 			
-			Drink d = new Drink();
 			d.setName(drink);
-			DrinkRequest dRequest = new DrinkRequest();
 			dRequest.setAskFor(d);
 			dRequest.setType(DrinkRequestType.FROM_NAME);
 		}
@@ -137,9 +141,7 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 			
 			result = "Spytałeś co można zrobić z " + ing;
 						
-			Drink d = new Drink();
 			d.setIngredients(ings);
-			DrinkRequest dRequest = new DrinkRequest();
 			dRequest.setAskFor(d);
 			dRequest.setType(DrinkRequestType.FROM_INGREDIENTS);
 		}
@@ -160,10 +162,8 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 			
 			result = "Spytałeś czego brakuje Ci do " + drink + " mając " + ing;
 			
-			Drink d = new Drink();
 			d.setName(drink);
 			d.setIngredients(ings);
-			DrinkRequest dRequest = new DrinkRequest();
 			dRequest.setAskFor(d);
 			dRequest.setType(DrinkRequestType.FROM_NAME_AND_INGREDIENTS);
 		}
@@ -171,11 +171,79 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 		{
 			result =" Nie znam odpowiedzi na to pytanie";
 		}
-		
 		gui.setResponse(result);
-		gui.setEditable(true);
 		
+		if(drinkQuery || ingredientQuery)
+		{
+			drinks = HandleRequest(dRequest);
+			for(Drink drin : drinks)
+			{
+				gui.setResponse(drin.getName());
+				String ing = "";
+				for(Ingredient ingredient : drin.getIngredients())
+				{
+					ing += ingredient.getName() + ", ";
+				}
+				if(ing.length() > 1)
+					ing = ing.substring(0, ing.length() - 2);
+				
+				gui.setResponse("Składniki: " + ing);
+				Recipe r = drin.getRecipe();
+				if(r != null)
+					gui.setResponse("Przepis: " + r.getContent());
+			}
+		}
+		
+		
+		gui.setEditable(true);
+	}
+	
+	private LinkedList<Drink> HandleRequest(DrinkRequest request)
+	{
+		ACLMessage query = new ACLMessage(ACLMessage.REQUEST);
+		query.setOntology(QueryOntology.NAME);
+		query.setLanguage(((WaiterAgent)myAgent).getCodecName());
 
+		AgentAction act = null;
+		DrinkResponse response = null;
+		for(AID bartender: bartenders)
+		{
+			act = request;
+			Action actOperator = new Action(bartender, act);
+			try {
+				myAgent.getContentManager().fillContent(query,actOperator);
+			   }
+			   catch (Exception ex) { ex.printStackTrace(); }
+			query.addReceiver(bartender);
+			myAgent.send(query);
+			ACLMessage msg = myAgent.blockingReceive(MessageTemplate.MatchPerformative(ACLMessage.INFORM));
+		
+						try {
+					ContentElement ce =  myAgent.getContentManager().extractContent(msg);
+					if (ce instanceof Action)
+					{
+						response = (DrinkResponse)((Action) ce).getAction(); 
+					}
+		
+				} catch (UngroundedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (CodecException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (OntologyException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				query.removeReceiver(bartender);
+				
+				if(response.getType() != DrinkResponseType.UNKNOWN)
+				{
+					return response.getResults();
+				}
+					
+		}
+		return null;
 	}
 
 }
