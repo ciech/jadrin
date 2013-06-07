@@ -4,6 +4,10 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 import main.jadrin.ontology.CheckElement;
+import main.jadrin.ontology.Drink;
+import main.jadrin.ontology.DrinkRequest;
+import main.jadrin.ontology.DrinkRequestType;
+import main.jadrin.ontology.Ingredient;
 import main.jadrin.ontology.QueryOntology;
 import main.jadrin.ontology.Type;
 import main.jadrin.tools.Tokenizer;
@@ -52,10 +56,6 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 		for (String str: tokens)
 		{
 			ACLMessage query = new ACLMessage(ACLMessage.REQUEST);
-			//query.addReceiver(bartenders[0]);
-			for(AID bartender: bartenders)
-				query.addReceiver(bartender);
-			
 			query.setOntology(QueryOntology.NAME);
 			query.setLanguage(((WaiterAgent)myAgent).getCodecName());
 			CheckElement toCheck = new CheckElement();
@@ -70,6 +70,7 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 					myAgent.getContentManager().fillContent(query,actOperator);
 				   }
 				   catch (Exception ex) { ex.printStackTrace(); }
+				query.addReceiver(bartender);
 				myAgent.send(query);
 				ACLMessage msg = myAgent.blockingReceive(MessageTemplate.MatchPerformative(ACLMessage.INFORM));
 			
@@ -99,9 +100,10 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 					else if (toCheck != null && toCheck.getType() == Type.INGREDIENT)
 					{
 						ingredientQuery=true;
-						if(ingredients.contains(toCheck.getName()))
+						if(!ingredients.contains(toCheck.getName()))
 							ingredients.add(toCheck.getName());
 					}
+					query.removeReceiver(bartender);
 			}
 				
 		}
@@ -111,24 +113,59 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 		if (drinkQuery && !ingredientQuery)
 		{
 			result = "Spytałeś o skład " + drink;
+			
+			Drink d = new Drink();
+			d.setName(drink);
+			DrinkRequest dRequest = new DrinkRequest();
+			dRequest.setAskFor(d);
+			dRequest.setType(DrinkRequestType.FROM_NAME);
 		}
 		else if (!drinkQuery && ingredientQuery)
 		{
 			String ing = "";
+	        ArrayList<Ingredient> ings = new ArrayList<Ingredient>();
 			for(String ingredient : ingredients)
+			{
 				ing += ingredient + ", ";
-			ing = ing.substring(0, ing.length() - 2);
+				Ingredient i = new Ingredient();
+				i.setName(ingredient);
+				ings.add(i);
+			}
+				
+			if(ing.length() > 1)
+				ing = ing.substring(0, ing.length() - 2);
 			
 			result = "Spytałeś co można zrobić z " + ing;
+						
+			Drink d = new Drink();
+			d.setIngredients(ings);
+			DrinkRequest dRequest = new DrinkRequest();
+			dRequest.setAskFor(d);
+			dRequest.setType(DrinkRequestType.FROM_INGREDIENTS);
 		}
 		else if (drinkQuery && ingredientQuery)
 		{
 			String ing = "";
+	        ArrayList<Ingredient> ings = new ArrayList<Ingredient>();
 			for(String ingredient : ingredients)
+			{
 				ing += ingredient + ", ";
-			ing = ing.substring(0, ing.length() - 2);
+				Ingredient i = new Ingredient();
+				i.setName(ingredient);
+				ings.add(i);
+			}
+			
+			if(ing.length() > 1)
+				ing = ing.substring(0, ing.length() - 2);
 			
 			result = "Spytałeś czego brakuje Ci do " + drink + " mając " + ing;
+			
+			Drink d = new Drink();
+			d.setName(drink);
+			d.setIngredients(ings);
+			DrinkRequest dRequest = new DrinkRequest();
+			dRequest.setAskFor(d);
+			dRequest.setType(DrinkRequestType.FROM_NAME_AND_INGREDIENTS);
 		}
 		else
 		{
