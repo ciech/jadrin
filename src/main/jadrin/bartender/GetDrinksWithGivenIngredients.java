@@ -13,7 +13,6 @@ public class GetDrinksWithGivenIngredients extends CyclicBehaviour {
 
 	public GetDrinksWithGivenIngredients(Agent agent) {
 		super(agent);
-		new Environment();
 	}
 
 	@Override

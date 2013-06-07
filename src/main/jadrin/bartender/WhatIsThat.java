@@ -56,9 +56,9 @@ public class WhatIsThat extends CyclicBehaviour {
 			}
 					
 			CheckElement result = bartender.whatIsThat(toCheck);	
-//			String [] s ={"wodka"} ; 
-//			LinkedList<Drink> d0 =  bartender.getDrinksWithGivenIngredients(s);
-//			Drink d1 =  bartender.getDrinkRecipe("Mojito");
+			String [] s ={"wodka"} ; 
+			LinkedList<Drink> d0 =  bartender.getDrinksWithGivenIngredients(s);
+			Drink d1 =  bartender.getDrinkRecipe("Mojito");
 //			String [] s1 ={"rum"} ;
 //			Drink d2 =  bartender.getMissingIngredientsAndRecipe(s1,"Mojito");
 			

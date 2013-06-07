@@ -1,4 +1,6 @@
 package main.jadrin.bartender;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -10,7 +12,11 @@ import main.jadrin.ontology.Drink;
 import main.jadrin.ontology.DrinkOntology;
 import main.jadrin.ontology.Ingredient;
 import main.jadrin.ontology.QueryOntology;
-import main.jadrin.ontology.Type;import gnu.prolog.term.AtomTerm;
+import main.jadrin.ontology.Type;import gnu.prolog.database.PrologTextLoader;
+import gnu.prolog.database.PrologTextLoaderState;
+import gnu.prolog.io.ParseException;
+import gnu.prolog.io.TermReader;
+import gnu.prolog.term.AtomTerm;
 import gnu.prolog.term.CompoundTerm;
 import gnu.prolog.term.DoubleQuotesTerm;
 import gnu.prolog.term.IntegerTerm;
@@ -87,6 +93,8 @@ public class BartenderAgent extends Agent {
 		URL rulesFile = getClass().getResource("/main/jadrin/resources/rules.pro");
 		environment.ensureLoaded(AtomTerm.get(knowledgeFile.getFile()));
 		environment.ensureLoaded(AtomTerm.get(rulesFile.getFile()));
+
+
 
 		this.interpreter = environment.createInterpreter();
 		environment.runInitialization(interpreter);
