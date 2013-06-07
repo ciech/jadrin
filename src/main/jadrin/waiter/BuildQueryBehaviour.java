@@ -6,6 +6,7 @@ import java.util.LinkedList;
 
 import main.jadrin.ontology.CheckElement;
 import main.jadrin.ontology.Drink;
+import main.jadrin.ontology.DrinkOntology;
 import main.jadrin.ontology.DrinkRequest;
 import main.jadrin.ontology.DrinkRequestType;
 import main.jadrin.ontology.DrinkResponse;
@@ -180,6 +181,12 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 		if(drinkQuery || ingredientQuery)
 		{
 			drinks = HandleRequest(dRequest);
+			if (drinks == null)
+			{
+				gui.setResponse("Żaden barman nie posiada wiedzy na ten temat");
+			}
+			else
+			{
 			for(Drink drin : drinks)
 			{
 				gui.setResponse(drin.getName());
@@ -196,6 +203,7 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 				if(r != null)
 					gui.setResponse("Przepis: " + r.getContent());
 			}
+			}
 		}
 		
 		
@@ -205,7 +213,7 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 	private LinkedList<Drink> HandleRequest(DrinkRequest request)
 	{
 		ACLMessage query = new ACLMessage(ACLMessage.REQUEST);
-		query.setOntology(QueryOntology.NAME);
+		query.setOntology(DrinkOntology.NAME);
 		query.setLanguage(((WaiterAgent)myAgent).getCodecName());
 
 		AgentAction act = null;
