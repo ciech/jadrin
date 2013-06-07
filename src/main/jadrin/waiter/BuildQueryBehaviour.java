@@ -52,10 +52,6 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 		for (String str: tokens)
 		{
 			ACLMessage query = new ACLMessage(ACLMessage.REQUEST);
-			//query.addReceiver(bartenders[0]);
-			for(AID bartender: bartenders)
-				query.addReceiver(bartender);
-			
 			query.setOntology(QueryOntology.NAME);
 			query.setLanguage(((WaiterAgent)myAgent).getCodecName());
 			CheckElement toCheck = new CheckElement();
@@ -70,6 +66,7 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 					myAgent.getContentManager().fillContent(query,actOperator);
 				   }
 				   catch (Exception ex) { ex.printStackTrace(); }
+				query.addReceiver(bartender);
 				myAgent.send(query);
 				ACLMessage msg = myAgent.blockingReceive(MessageTemplate.MatchPerformative(ACLMessage.INFORM));
 			
@@ -99,9 +96,10 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 					else if (toCheck != null && toCheck.getType() == Type.INGREDIENT)
 					{
 						ingredientQuery=true;
-						if(ingredients.contains(toCheck.getName()))
+						if(!ingredients.contains(toCheck.getName()))
 							ingredients.add(toCheck.getName());
 					}
+					query.removeReceiver(bartender);
 			}
 				
 		}
@@ -117,7 +115,8 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 			String ing = "";
 			for(String ingredient : ingredients)
 				ing += ingredient + ", ";
-			ing = ing.substring(0, ing.length() - 2);
+			if(ing.length() > 1)
+				ing = ing.substring(0, ing.length() - 2);
 			
 			result = "Spytałeś co można zrobić z " + ing;
 		}
@@ -126,7 +125,8 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 			String ing = "";
 			for(String ingredient : ingredients)
 				ing += ingredient + ", ";
-			ing = ing.substring(0, ing.length() - 2);
+			if(ing.length() > 1)
+				ing = ing.substring(0, ing.length() - 2);
 			
 			result = "Spytałeś czego brakuje Ci do " + drink + " mając " + ing;
 		}
