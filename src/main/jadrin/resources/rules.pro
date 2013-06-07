@@ -27,11 +27,11 @@ is_drink(I) :- ingredients(N,S), member_rec(I,N).
 %B. Mam skladnik1 i skladnik2, co moge zrobic? 
 
 %Zwraca tylko te drinki,ktore wykorzystuja wszystkie podane skladniki
-what_can_i_do(I, D, L) :-  ((ingredients(D,L),member(I,L)) ; length(I,0)).
-what_can_i_do([I|T],D,L) :-  (ingredients(D,L),member(I,L)) , what_can_i_do(T, D, L).
+what_can_i_do(Ingredient, Drink, List, Recipe) :-  ((ingredients(Drink,List),member(Ingredient,List)) ; length(Ingredient,0)), recipe(Drink,Recipe).
+what_can_i_do([Ingredient|Tail],Drink,List, Recipe) :-  (ingredients(Drink,List), member(Ingredient,List)), what_can_i_do(Tail, Drink, List,Recipe ), recipe(Drink,Recipe).
 
 %Zwraca wszystkie drinki ktore wykorzystuja ktorykolwiek skladnik
-what_can_i_do2([I|T],D,L) :-  (ingredients(D,L), (member(I,L)) ; what_can_i_do2(T, D, L)).
+what_can_i_do2([Ingredient|Tail],Drink,List) :-  (ingredients(Drink,List), (member(Ingredient,List)) ; what_can_i_do2(Tail, Drink, List)).
 
 %===
 %C. Mam cole i whisky czego mi brakuje do whisky z lodem? Zwaraca prawidlowy wynik lezeli mamy wiecej skladnikow niz jest w przepisie.
