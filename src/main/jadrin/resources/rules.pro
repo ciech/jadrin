@@ -15,9 +15,13 @@ deletelist([X|Xs], Y, [X|Zs]) :- deletelist(Xs, Y, Zs).
 %============================================================================
 %============================================================================
 %Ptanie zero - co to jest za typ?
-is_ingredient(I) :- ingredients(N, S), member_rec(I,S).
-is_drink(I) :- ingredients(N,S), member_rec(I,N).
-is_part_of(I) :- (ingredients(N, S), member_rec(I,S), \+(member(I,S))) ;  ( ingredients(N,S), member_rec(I,N), \+(member(I,N))).
+is_ingredient(I) :- ingredients(N, S), member_rec(I,S), write(I), write(S).
+is_drink(I) :- ingredients(N,S), member_rec(I,N), write(I), write(N).
+
+is_part_of(I) :- (ingredients(N, S), member_rec(I,S), \+ (memberchk(I,S))).
+
+is_part_of(I) :-  ( ingredients(N,S), member_rec(I,N), I\==N ).
+
 
 %===
 %A. Pytanie jak robi sie rum z cola?

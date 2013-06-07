@@ -86,6 +86,8 @@ public class Drink implements Concept, Serializable{
 		builder.append("]");
 		return builder.toString();
 	}
+	
+//	private String serializeSimpleString(String str)
 
 	private String serializeRecipe() {
 		return "['" + this.recipe.getContent() + "']";

@@ -138,6 +138,7 @@ public class BartenderAgent extends Agent {
 			result.setType(Type.INGREDIENT);
 			return result;
 		}
+		
 		if(isDrink == PrologCode.SUCCESS) {
 			result.setType(Type.DRINK);
 			return result;
