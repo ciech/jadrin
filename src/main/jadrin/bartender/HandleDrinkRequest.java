@@ -84,7 +84,9 @@ public class HandleDrinkRequest extends OneShotBehaviour {
 	private void fillResponse(Drink drink, DrinkResponse response) {
 		if(drink != null){
 			response.setType(DrinkResponseType.SINGLE_MATCH);
-			response.setAskFor(drink);
+			LinkedList<Drink> list = new LinkedList<Drink>();
+			list.add(drink);
+			response.setResults(list);
 		}else
 			response.setType(DrinkResponseType.UNKNOWN);	
 	}
@@ -96,7 +98,7 @@ public class HandleDrinkRequest extends OneShotBehaviour {
 			break;
 		case 1:
 			response.setType(DrinkResponseType.SINGLE_MATCH);
-			response.setAskFor(drinks.get(0));
+			response.setResults(drinks);
 			break;
 		default:
 			response.setType(DrinkResponseType.MULTI_MATCH);
