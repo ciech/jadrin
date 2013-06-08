@@ -64,7 +64,7 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 		{
 			
 			String str = AlphabetNormalizer.unAccent(tokens[i]);
-			System.out.println(str);
+			str = str.toLowerCase();
 			ACLMessage query = new ACLMessage(ACLMessage.REQUEST);
 			query.setOntology(QueryOntology.NAME);
 			query.setLanguage(((WaiterAgent)myAgent).getCodecName());
@@ -105,7 +105,12 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-						
+				
+				if (toCheck != null && toCheck.isPartOf())
+				{
+					System.out.println("Słowo jest częścią nazwy");
+				}
+				
 				if (toCheck != null && toCheck.getType() == Type.DRINK)
 				{
 					drinkQuery=true;
@@ -122,6 +127,7 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 				
 		}
 		
+		DrinkRequestType type = DrinkRequestType.FROM_NAME;
 		String result = "";
 		Drink d = new Drink();
 		DrinkRequest dRequest = new DrinkRequest();
@@ -132,7 +138,8 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 			
 			d.setName(drink);
 			dRequest.setAskFor(d);
-			dRequest.setType(DrinkRequestType.FROM_NAME);
+			type = DrinkRequestType.FROM_NAME;
+			dRequest.setType(type);
 		}
 		else if (!drinkQuery && ingredientQuery)
 		{
@@ -153,7 +160,8 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 						
 			d.setIngredients(ings);
 			dRequest.setAskFor(d);
-			dRequest.setType(DrinkRequestType.FROM_INGREDIENTS);
+			type = DrinkRequestType.FROM_INGREDIENTS;
+			dRequest.setType(type);
 		}
 		else if (drinkQuery && ingredientQuery)
 		{
@@ -170,12 +178,13 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 			if(ing.length() > 1)
 				ing = ing.substring(0, ing.length() - 2);
 			
-			result = "Spytałeś czego brakuje Ci do " + drink + " mając " + ing;
+			result = "Spytałeś czego brakuje Ci do " + drink + " jeśli posiadasz " + ing;
 			
 			d.setName(drink);
 			d.setIngredients(ings);
 			dRequest.setAskFor(d);
-			dRequest.setType(DrinkRequestType.FROM_NAME_AND_INGREDIENTS);
+			type = DrinkRequestType.FROM_NAME_AND_INGREDIENTS;
+			dRequest.setType(type);
 		}
 		else
 		{
@@ -183,18 +192,30 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 		}
 		gui.setResponse(result);
 		
+		String response = "";
 		if(drinkQuery || ingredientQuery)
 		{
 			drinks = HandleRequest(dRequest);
 			if (drinks == null)
 			{
-				gui.setResponse("Żaden barman nie posiada wiedzy na ten temat");
+				response = ("Żaden barman nie posiada wiedzy na ten temat");
 			}
 			else
 			{
+			 if (drinks.size() > 5)
+			 {
+				 response+= "Znaleziono aż "+ drinks.size()+ " pasujących drinków\n";
+				 response+= "Proszę wybrać konkretnego drinka z listy\n";
+				 for(Drink drin : drinks)
+					{
+					 	response+=("Drink: " + drin.getName()+"\n");
+					}
+			 }
+			 else
+			 {
 			for(Drink drin : drinks)
 			{
-				gui.setResponse(drin.getName());
+				response+=  "Drink: " + drin.getName() + "\n";
 				String ing = "";
 				for(Ingredient ingredient : drin.getIngredients())
 				{
@@ -203,15 +224,24 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 				if(ing.length() > 1)
 					ing = ing.substring(0, ing.length() - 2);
 				
-				gui.setResponse("Składniki: " + ing);
+				if (type == DrinkRequestType.FROM_NAME_AND_INGREDIENTS)
+				{
+					response+= "Brakujące składniki: " + ing + "\n";
+				}
+				else
+				{
+					response+= "Składniki: " + ing + "\n";
+				}
+			
 				Recipe r = drin.getRecipe();
 				if(r != null)
-					gui.setResponse("Przepis: " + r.getContent());
+					response += "Przepis: " + r.getContent() + "\n";
+			}
 			}
 			}
 		}
 		
-		
+		gui.setResponse(response);
 		gui.setEditable(true);
 	}
 	

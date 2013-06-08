@@ -8,6 +8,6 @@
 </listAttribute>
 <booleanAttribute key="org.eclipse.jdt.debug.ui.INCLUDE_EXTERNAL_JARS" value="true"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="jade.Boot"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-agents &quot;waiter:main.jadrin.waiter.WaiterAgent;bartender:main.jadrin.bartender.BartenderAgent;bartender-2:main.jadrin.bartender.BartenderAgent&quot; -local-port 2222"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-agents &quot;waiter:main.jadrin.waiter.WaiterAgent;drinkuj_pl:main.jadrin.bartender.BartenderAgent; -local-port 2222"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="jadrin"/>
 </launchConfiguration>

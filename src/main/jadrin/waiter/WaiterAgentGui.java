@@ -54,7 +54,7 @@ public final class WaiterAgentGui extends JFrame {
 		
 		JScrollPane  questionPane = new JScrollPane(question);
 		questionPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		questionPane.setPreferredSize(new Dimension(400, 70));
+		questionPane.setPreferredSize(new Dimension(600, 70));
 		questionPane.setBorder(
 			BorderFactory.createCompoundBorder(
 				BorderFactory.createCompoundBorder(
@@ -68,7 +68,7 @@ public final class WaiterAgentGui extends JFrame {
    	    response.setEditable(false);
    	    
    	    JScrollPane  responsePane = new JScrollPane(response);
-	   	responsePane.setPreferredSize(new Dimension(400, 250));
+	   	responsePane.setPreferredSize(new Dimension(600, 250));
 	   	responsePane.setBorder(
 	   		BorderFactory.createCompoundBorder(
 	   			BorderFactory.createCompoundBorder(
@@ -85,12 +85,13 @@ public final class WaiterAgentGui extends JFrame {
 	
 	public void setResponse(String response)
 	{
-		this.response.append("Kelner: " + response + "\n");
+	   this.response.append("Kelner: " + response + "\n");
 	}
 	
 	public void setEditable(boolean editable)
 	{
-		this.question.setEditable(editable);
+		this.question.setEnabled(editable);
+		
 	}
 	
 	public void showGui() {

@@ -78,9 +78,9 @@ public class Drink implements Concept, Serializable{
 	//	} catch (IOException e1) {
 	//		e1.printStackTrace();
 	//	} 
-	public void writeFacts(java.io.BufferedWriter out) throws IOException{
+	
+	public void writeIngredients(java.io.BufferedWriter out) throws IOException{
 		String nameStr = serializeName();
-		String recipeStr = serializeRecipe();
 		String ingredientsStr = serializeIngredients();
 		out.write("ingredients(");
 		out.write(nameStr);
@@ -88,13 +88,27 @@ public class Drink implements Concept, Serializable{
 		out.write(ingredientsStr);
 		out.write(").");
 		out.newLine();
-
+	}
+	
+	public void writeRecipe(java.io.BufferedWriter out) throws IOException{
+		String nameStr = serializeName();
+		String recipeStr = serializeRecipe();
 		out.write("recipe(");
 		out.write(nameStr);
 		out.write(",");
 		out.write(recipeStr);
 		out.write(").");
 		out.newLine();
+	}
+	
+	
+	public void writeFacts(java.io.BufferedWriter out) throws IOException{
+		
+		
+		writeIngredients(out);
+		writeRecipe(out);
+
+	
 	}
 
 	private String serializeName() {

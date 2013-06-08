@@ -1,5 +1,7 @@
 package main.jadrin.bartender;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -12,7 +14,9 @@ import main.jadrin.ontology.Drink;
 import main.jadrin.ontology.DrinkOntology;
 import main.jadrin.ontology.Ingredient;
 import main.jadrin.ontology.QueryOntology;
-import main.jadrin.ontology.Type;import gnu.prolog.database.PrologTextLoader;
+import main.jadrin.ontology.Type;import main.jadrin.tools.PageParser;
+import main.jadrin.tools.Parser_drinkuj_pl;
+import gnu.prolog.database.PrologTextLoader;
 import gnu.prolog.database.PrologTextLoaderState;
 import gnu.prolog.io.ParseException;
 import gnu.prolog.io.TermReader;
@@ -82,17 +86,57 @@ public class BartenderAgent extends Agent {
 	}
 
 	protected void setup() 
-	{ 
+	{ 		System.out.println("Barman setup");
+		File temp = null;
+		if ("drinkuj_pl".equals(this.getLocalName()))
+		{
+			
+			 
+			System.out.println("Barman getting data from drinkuj_pl");
+			temp = new File("drinkuj_pl.pro");
+			if (!temp.exists())
+			{
+				PageParser parser= new Parser_drinkuj_pl();
+				ArrayList<Drink> drinks = parser.parsePage();
+				try{
+				
+					BufferedWriter bw = new BufferedWriter(new FileWriter(temp));
+					for (Drink drink : drinks)
+					{   
+						drink.writeIngredients(bw); 
+					}
+					
+					for (Drink drink : drinks)
+					{   
+						drink.writeRecipe(bw); 
+					}
+					
+					
+					bw.close();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+
 		getContentManager().registerLanguage(codec);
 		getContentManager().registerOntology(queryOntology);
 		getContentManager().registerOntology(drinkOntology);
-
+		System.out.println("Building Prolog DataBase");
 		//Prolog setup:
 		this.environment =  new Environment();
 
-		URL knowledgeFile = getClass().getResource("/main/jadrin/resources/knowledge.pro");
+		
+
+		
+		//URL knowledgeFile = getClass().getResource("/main/jadrin/resources/knowledge.pro");
+		//environment.ensureLoaded(AtomTerm.get(knowledgeFile.getFile()));
+		if (null != temp)
+		{
+			environment.ensureLoaded(AtomTerm.get(temp.getPath()));
+		}
+		
 		URL rulesFile = getClass().getResource("/main/jadrin/resources/rules.pro");
-		environment.ensureLoaded(AtomTerm.get(knowledgeFile.getFile()));
 		environment.ensureLoaded(AtomTerm.get(rulesFile.getFile()));
 
 
@@ -100,7 +144,7 @@ public class BartenderAgent extends Agent {
 		this.interpreter = environment.createInterpreter();
 		environment.runInitialization(interpreter);
 		//    	
-
+		System.out.println("Barman ready");
 		registerService();
 		addBehaviour(new CommunicateBehaviour(this)); // handles A,B and C case from documentation
 	}
@@ -170,7 +214,6 @@ public class BartenderAgent extends Agent {
 			try {
 				rc = interpreter.execute(goal);
 				while(rc == PrologCode.SUCCESS || rc == PrologCode.SUCCESS_LAST){
-					//rc = interpreter.runOnce(goalTerm);
 					Term drinkDeref  = drinkName.dereference();
 					Term fullIngredientsDeref = fullIngredientsList.dereference();
 					Term recipeDeref = recipe.dereference();	

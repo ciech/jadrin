@@ -35,7 +35,6 @@ public class HandleCheckElement extends OneShotBehaviour {
 		try {
 			ContentElement ce =  myAgent.getContentManager().extractContent(msg);
 			CheckElement toCheck = (CheckElement)((Action) ce).getAction(); 
-			
 			BartenderAgent bartender = (BartenderAgent) myAgent;
 			CheckElement result = bartender.whatIsThat(toCheck);			
 			ACLMessage reply = msg.createReply();
