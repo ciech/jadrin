@@ -1,6 +1,7 @@
 	package main.jadrin.waiter;
 
 import java.nio.charset.Charset;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -53,13 +54,18 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 		boolean ingredientQuery = false;
 		
 		IStemmer stemmer = new PolishStemmer();
-		String[] notPermitted = {"prep"};
+		String[] notPermitted = {"prep","siebie","conj","comp"};
 		String[] tokens = Tokenizer.getTokens(stemmer, query, notPermitted);
 		
 		String drink = "";
         ArrayList<String> ingredients = new ArrayList<String>();
-		for (String str: tokens)
+		for (int i=0; i<tokens.length; ++i)
 		{
+			String str = 
+				       Normalizer
+				           .normalize(tokens[i], Normalizer.Form.NFD)
+				           .replaceAll("[^\\p{ASCII}]", "");
+			System.out.println(str);
 			ACLMessage query = new ACLMessage(ACLMessage.REQUEST);
 			query.setOntology(QueryOntology.NAME);
 			query.setLanguage(((WaiterAgent)myAgent).getCodecName());
