@@ -52,7 +52,7 @@ public class BartenderAgent extends Agent {
 	private Ontology queryOntology = QueryOntology.getInstance();
 	private Ontology drinkOntology = DrinkOntology.getInstance();
 
-
+	private static final String INVALID = "INVALID_INVALID_INVALID";
 
 	private void registerService() {
 		DFAgentDescription dfd = new DFAgentDescription();
@@ -138,7 +138,7 @@ public class BartenderAgent extends Agent {
 			result.setType(Type.INGREDIENT);
 			return result;
 		}
-		
+
 		if(isDrink == PrologCode.SUCCESS) {
 			result.setType(Type.DRINK);
 			return result;
@@ -152,7 +152,7 @@ public class BartenderAgent extends Agent {
 
 		//		LinkedList<Term> terms = new LinkedList<Term>();
 		LinkedList<Drink> drinkList = new LinkedList<Drink>();
-		
+
 		for (Ingredient ing : ingredientsArray) {
 			String ingredient = ing.getName();
 			Term ingredientTerm = buildTermList(ingredient);
@@ -227,7 +227,7 @@ public class BartenderAgent extends Agent {
 
 		VariableTerm fullIngredientsList = new VariableTerm("FullIngredientsList");
 		VariableTerm recipe = new VariableTerm("Recipe");
-		Term drinkTerm = buildTerm(drinkName);
+		Term drinkTerm = buildTermList(drinkName);
 		Term[] args1 = { drinkTerm, fullIngredientsList};	
 		CompoundTerm goalTermIngredients = new CompoundTerm(AtomTerm.get("ingredients"), args1);
 		Term[] args2 = { drinkTerm, recipe};	
@@ -259,7 +259,7 @@ public class BartenderAgent extends Agent {
 		VariableTerm missingIngredients = new VariableTerm("MissingIngredients");
 		VariableTerm recipe = new VariableTerm("Recipe");
 
-		Term drinkTerm = buildTerm(drinkName);
+		Term drinkTerm = buildTermList(drinkName);
 		Term ingredientsTerm = buildTermList(arrayList);
 
 		Term[] args1 = { ingredientsTerm, drinkTerm, missingIngredients, recipe };	
@@ -280,12 +280,15 @@ public class BartenderAgent extends Agent {
 	}
 
 	private Term buildTermList(ArrayList<Ingredient> arrayList) {
-		
-		String[] str = new String [arrayList.size()];
-		for(int i = 0 ; i<arrayList.size(); i++ ){
-			str[i]= arrayList.get(i).getName();
+		if(arrayList!= null){
+			String[] str = new String [arrayList.size()];
+			for(int i = 0 ; i<arrayList.size(); i++ ){
+				str[i]= arrayList.get(i).getName();
+			}
+			return buildTermList(str);
 		}
-		return buildTermList(str);
+		
+		return buildTermList(INVALID);
 	}
 
 	private Term buildTerm(String termStr) {
@@ -304,11 +307,15 @@ public class BartenderAgent extends Agent {
 	}
 
 	private Term buildTermList(String[] str) {
-		List<Term> terms = new LinkedList<Term>();
-		for (String string : str) {
-			terms.add(buildTerm(string) );
+		if(str != null){
+			List<Term> terms = new LinkedList<Term>();
+			for (String string : str) {
+				terms.add(buildTerm(string) );
+			}
+			return CompoundTerm.getList(terms); 
 		}
-		return CompoundTerm.getList(terms); 
+		return buildTermList(INVALID);
 	}
 
+	
 }
