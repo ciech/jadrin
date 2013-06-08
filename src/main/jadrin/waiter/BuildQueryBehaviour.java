@@ -16,6 +16,7 @@ import main.jadrin.ontology.Ingredient;
 import main.jadrin.ontology.QueryOntology;
 import main.jadrin.ontology.Recipe;
 import main.jadrin.ontology.Type;
+import main.jadrin.tools.AlphabetNormalizer;
 import main.jadrin.tools.Tokenizer;
 import morfologik.stemming.IStemmer;
 import morfologik.stemming.PolishStemmer;
@@ -61,10 +62,8 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
         ArrayList<String> ingredients = new ArrayList<String>();
 		for (int i=0; i<tokens.length; ++i)
 		{
-			String str = 
-				       Normalizer
-				           .normalize(tokens[i], Normalizer.Form.NFD)
-				           .replaceAll("[^\\p{ASCII}]", "");
+			
+			String str = AlphabetNormalizer.unAccent(tokens[i]);
 			System.out.println(str);
 			ACLMessage query = new ACLMessage(ACLMessage.REQUEST);
 			query.setOntology(QueryOntology.NAME);
