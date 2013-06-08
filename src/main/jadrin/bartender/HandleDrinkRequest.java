@@ -1,5 +1,9 @@
 package main.jadrin.bartender;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -48,7 +52,7 @@ public class HandleDrinkRequest extends OneShotBehaviour {
 				fillResponse(drinks, response);
 				break;
 			case FROM_NAME:
-				drink = bartender.getDrinkRecipe(request.getAskFor().getName());
+				drink = bartender.getDrinkRecipe(request.getAskFor().getName());	
 				fillResponse(drink, response);
 				break;
 			case FROM_NAME_AND_INGREDIENTS:
@@ -57,10 +61,10 @@ public class HandleDrinkRequest extends OneShotBehaviour {
 				break;
 			default:
 				break;
-				
+
 			}
 
-		
+
 			ACLMessage reply = msg.createReply();
 			AgentAction act = response;
 			Action actOperator = new Action(msg.getSender(), act);
@@ -105,6 +109,6 @@ public class HandleDrinkRequest extends OneShotBehaviour {
 			response.setResults(drinks);
 			break;
 		}
-		
+
 	}
 }

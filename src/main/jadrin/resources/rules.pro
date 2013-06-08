@@ -18,7 +18,10 @@ deletelist([X|Xs], Y, [X|Zs]) :- deletelist(Xs, Y, Zs).
 is_ingredient(I) :- ingredients(N, S), member_rec(I,S), write(I), write(S).
 is_drink(I) :- ingredients(N,S), member_rec(I,N), write(I), write(N).
 
-is_part_of(I) :- (ingredients(N, S), member_rec(I,S), \+ (memberchk(I,S))).
+
+
+
+%is_part_of(I) :- (ingredients(N, S), member_rec(I,S), \+ (member(I,S))).
 
 is_part_of(I) :-  ( ingredients(N,S), member_rec(I,N), I\==N ).
 

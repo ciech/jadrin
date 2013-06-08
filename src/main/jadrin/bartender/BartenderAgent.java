@@ -201,8 +201,9 @@ public class BartenderAgent extends Agent {
 	}
 
 	private String[] tokenizeIngredients(Term fullIngredientsDeref) {
-		String str = fullIngredientsDeref.toString().replace("'", "").replace(",", "").replace("[[", "").replace("]]", "").replace("][", " ");
-		StringTokenizer tokenizer = new StringTokenizer(str.toString(), "[]");
+		String str = fullIngredientsDeref.toString().replace("'", "").replace(",", "").replace("]][[", "|").replace("][", " ").replace("[", "").replace("]", "");
+//				.replace("[[", "").replace("]]", "").replace("][", " ");
+		StringTokenizer tokenizer = new StringTokenizer(str.toString(), "|");
 		ArrayList<String> ingredients = new ArrayList<String> ();
 
 		while(tokenizer.hasMoreTokens()){
@@ -260,7 +261,7 @@ public class BartenderAgent extends Agent {
 		VariableTerm recipe = new VariableTerm("Recipe");
 
 		Term drinkTerm = buildTermList(drinkName);
-		Term ingredientsTerm = buildTermList(arrayList);
+		Term ingredientsTerm = buildTerm(buildTermList(arrayList));
 
 		Term[] args1 = { ingredientsTerm, drinkTerm, missingIngredients, recipe };	
 		CompoundTerm goalTermMissingIngredients= new CompoundTerm(AtomTerm.get("what_is_missing"), args1);
@@ -294,6 +295,12 @@ public class BartenderAgent extends Agent {
 	private Term buildTerm(String termStr) {
 		List<Term> terms = new LinkedList<Term>();
 		terms.add(AtomTerm.get(termStr) );
+		return CompoundTerm.getList(terms); 
+	}
+	
+	private Term buildTerm(Term term) {
+		List<Term> terms = new LinkedList<Term>();
+		terms.add(term);
 		return CompoundTerm.getList(terms); 
 	}
 

@@ -1,15 +1,16 @@
 %facts
-ingredients([['Wsciekly'],['Pies']]	,[['wodka'],[['sok'], ['malinowy']],['tabasko']]).
-ingredients([['Wolski'],['Kafar']]	,[['wodka'],['pieprz']]).
-ingredients([['Mojito']]				,[['rum'],[['sok'] ,['limonki']],['limonka'],['lod'],[['cukier'],['trzcinowy']]]).
-ingredients([['White'],['Malibu']]	,[['malibu'],['mleko']]).
-ingredients([['Black'],['Malibu']]	,[['malibu'],[['olej'], ['samochodowy']]]).
-ingredients([['Lagodny'],['Pies']]	,[['wodka'],[['sok'], ['malinowy']],['tabasko'], ['mleko']]).
-ingredients([['Mojito2']], [[['malibu']],[['mleko']]]).
+ingredients([['wsciekly'],['pies']]	,[[['wodka']],[['sok'], ['malinowy']],[['tabasko']]]).
+ingredients([['wolski'],['kafar']]	,[[['wodka']],[['pieprz']]]).
+ingredients([['mojito']]			,[[['rum']],[['sok'],['limonki']],[['limonka']],[['lod']],[['cukier'],['trzcinowy']]]).
+ingredients([['white'],['malibu']]	,[[['malibu']],[['mleko']]]).
+ingredients([['black'],['malibu']]	,[[['malibu']],[['olej'], ['samochodowy']]]).
+ingredients([['lagodny'],['pies']]	,[[['wodka']],[['sok'], ['malinowy']],[['tabasko']], [['mleko']]]).
+ingredients([['screwdriver']]		,[[['sok'],['pomaranczowy']],[['wodka']]]).
 
-recipe([['Wsciekly'],['Pies']]	,['wymieszaj wszystko']).
-recipe([['Wolski'],['Kafar']]	,['wymieszaj wszystko']).
-recipe([['Mojito']]				,['wymieszaj wszystko']).
-recipe([['White'],['Malibu']]	,['wymieszaj wszystko']).
-recipe([['Black'],['Malibu']]	,['wymieszaj wszystko']).
-recipe([['Lagodny'],['Pies']]	,['wymieszaj wszystko']).
+recipe([['wsciekly'],['pies']]	,['wymieszaj wszystko']).
+recipe([['wolski'],['kafar']]	,['wymieszaj wszystko']).
+recipe([['mojito']]				,['wymieszaj wszystko']).
+recipe([['white'],['malibu']]	,['wymieszaj wszystko']).
+recipe([['black'],['malibu']]	,['wymieszaj wszystko']).
+recipe([['lagodny'],['pies']]	,['wymieszaj wszystko']).
+recipe([['screwdriver']]		,['wymieszaj wszystko']).
