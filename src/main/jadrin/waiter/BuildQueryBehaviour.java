@@ -60,6 +60,7 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 		
 		String drink = "";
         ArrayList<String> ingredients = new ArrayList<String>();
+        String cache= "";
 		for (int i=0; i<tokens.length; ++i)
 		{
 			
@@ -69,6 +70,10 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 			query.setOntology(QueryOntology.NAME);
 			query.setLanguage(((WaiterAgent)myAgent).getCodecName());
 			CheckElement toCheck = new CheckElement();
+			if (cache.length()>0)
+			{
+				str = cache + " " +  str;
+			}
 			toCheck.setName(str);
 			toCheck.setPartOf(false);
 			toCheck.setType(Type.UNKNOWN);
@@ -108,8 +113,12 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 				
 				if (toCheck != null && toCheck.isPartOf())
 				{
-					System.out.println("Słowo jest częścią nazwy");
+					cache = toCheck.getName();
+					query.removeReceiver(bartender);
+					break;
 				}
+				
+				cache = "";
 				
 				if (toCheck != null && toCheck.getType() == Type.DRINK)
 				{

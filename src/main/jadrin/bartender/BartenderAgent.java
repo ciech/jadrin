@@ -153,13 +153,21 @@ public class BartenderAgent extends Agent {
 
 		if (check == null) return new CheckElement();
 
-		Term[] args = {buildTerm(check.getName())};
+		String str = check.getName();
+		String to[] = str.split(" ");
+	
+		Term[] args = {buildTermList(to)};
+
 		//Term[] args = {AtomTerm.get(check.getName())};
 		CheckElement result = check;
 		CompoundTerm goalTermIngredient = new CompoundTerm(AtomTerm.get("is_ingredient"), args);
 		CompoundTerm goalTermDrink = new CompoundTerm(AtomTerm.get("is_drink"), args);
 		CompoundTerm goalTermPartOf = new CompoundTerm(AtomTerm.get("is_part_of"), args);
 
+		for (Term term : args)
+		{
+			System.out.print(term +",");
+		}
 		int isIngredient = PrologCode.FAIL;
 		int isDrink = PrologCode.FAIL;
 		int isPartOf =PrologCode.FAIL;
@@ -172,12 +180,9 @@ public class BartenderAgent extends Agent {
 			e.printStackTrace();
 		}
 
+		System.out.println(isIngredient + " " + isDrink + " "+isPartOf);
 		result.setPartOf(false);	
-		if(isPartOf ==  PrologCode.SUCCESS){
-			result.setPartOf(true);	
-		}
-
-
+		
 		if(isIngredient == PrologCode.SUCCESS){
 			result.setType(Type.INGREDIENT);
 			return result;
@@ -187,6 +192,14 @@ public class BartenderAgent extends Agent {
 			result.setType(Type.DRINK);
 			return result;
 		}
+		
+		if(isPartOf ==  PrologCode.SUCCESS){
+			result.setPartOf(true);	
+			return result;
+		}
+
+
+		
 
 		result.setType(Type.UNKNOWN);
 		return result; 	
