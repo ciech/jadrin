@@ -94,8 +94,26 @@ public final class WaiterAgentGui extends JFrame {
 		
 	}
 	
+	public void done()
+	{
+		  WindowEvent wev = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
+          Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(wev);
+          setResponse("Papa!");
+          JOptionPane.showMessageDialog(null,"Dziękujemy za korzystanie z Jadrin");  
+	}
+	
 	public void showGui() {
 		pack();
+		
+	    this.addWindowListener(new WindowAdapter(){
+            public void windowClosing(WindowEvent we)
+            {
+            	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            	setResponse("Papa!");
+            	JOptionPane.showMessageDialog(null,"Dziękujemy za korzystanie z Jadrin");    
+            }
+        });
+		
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int centerX = (int)screenSize.getWidth() / 2;
 		int centerY = (int)screenSize.getHeight() / 2;

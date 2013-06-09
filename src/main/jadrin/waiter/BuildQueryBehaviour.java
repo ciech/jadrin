@@ -136,6 +136,7 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 		
 		DrinkRequestType type = DrinkRequestType.FROM_NAME;
 		String result = "";
+		Boolean finished = false;
 		Drink d = new Drink();
 		DrinkRequest dRequest = new DrinkRequest();
 		LinkedList<Drink> drinks = null;
@@ -196,59 +197,62 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 		else
 		{
 			result =" Nie znam odpowiedzi na to pytanie";
+			finished = true;
 		}
 		gui.setResponse(result);
 		
-		String response = "";
-		if(drinkQuery || ingredientQuery)
-		{
-			drinks = HandleRequest(dRequest);
-			if (drinks == null)
+		if (!finished){
+			String response = "";
+			if(drinkQuery || ingredientQuery)
 			{
-				response = ("Żaden barman nie posiada wiedzy na ten temat");
-			}
-			else
-			{
-			 if (drinks.size() > 5)
-			 {
-				 response+= "Znaleziono aż "+ drinks.size()+ " pasujących drinków\n";
-				 response+= "Proszę wybrać konkretnego drinka z listy\n";
-				 for(Drink drin : drinks)
-					{
-					 	response+=("Drink: " + drin.getName()+"\n");
-					}
-			 }
-			 else
-			 {
-			for(Drink drin : drinks)
-			{
-				response+=  "Drink: " + drin.getName() + "\n";
-				String ing = "";
-				for(Ingredient ingredient : drin.getIngredients())
+				drinks = HandleRequest(dRequest);
+				if (drinks == null)
 				{
-					ing += ingredient.getName() + ", ";
-				}
-				if(ing.length() > 1)
-					ing = ing.substring(0, ing.length() - 2);
-				
-				if (type == DrinkRequestType.FROM_NAME_AND_INGREDIENTS)
-				{
-					response+= "Brakujące składniki: " + ing + "\n";
+					response = ("Żaden barman nie posiada wiedzy na ten temat");
 				}
 				else
 				{
-					response+= "Składniki: " + ing + "\n";
+				 if (drinks.size() > 5)
+				 {
+					 response+= "Znaleziono aż "+ drinks.size()+ " pasujących drinków\n";
+					 response+= "Proszę wybrać konkretnego drinka z listy\n";
+					 for(Drink drin : drinks)
+						{
+						 	response+=("Drink: " + drin.getName()+"\n");
+						}
+				 }
+				 else
+				 {
+				for(Drink drin : drinks)
+				{
+					response+=  "Drink: " + drin.getName() + "\n";
+					String ing = "";
+					for(Ingredient ingredient : drin.getIngredients())
+					{
+						ing += ingredient.getName() + ", ";
+					}
+					if(ing.length() > 1)
+						ing = ing.substring(0, ing.length() - 2);
+					
+					if (type == DrinkRequestType.FROM_NAME_AND_INGREDIENTS)
+					{
+						response+= "Brakujące składniki: " + ing + "\n";
+					}
+					else
+					{
+						response+= "Składniki: " + ing + "\n";
+					}
+				
+					Recipe r = drin.getRecipe();
+					if(r != null)
+						response += "Przepis: " + r.getContent() + "\n";
 				}
+				}
+				}
+			}
 			
-				Recipe r = drin.getRecipe();
-				if(r != null)
-					response += "Przepis: " + r.getContent() + "\n";
-			}
-			}
-			}
+			gui.setResponse(response);
 		}
-		
-		gui.setResponse(response);
 		gui.setEditable(true);
 	}
 	
