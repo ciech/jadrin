@@ -1,7 +1,6 @@
 package main.jadrin.tools;
 
 import java.text.Normalizer;
-import java.util.regex.Pattern;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;

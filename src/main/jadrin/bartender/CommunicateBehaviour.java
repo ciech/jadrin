@@ -22,10 +22,11 @@ public CommunicateBehaviour(BartenderAgent bartenderAgent) {
 
 
 public void action() {
-	MessageTemplate mt2 = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
+	
+	MessageTemplate mt = MessageTemplate.MatchPerformative(ACLMessage.REQUEST);
 	BartenderAgent bartender = (BartenderAgent)myAgent;
 
-	ACLMessage msg = myAgent.blockingReceive(mt2);
+	ACLMessage msg = myAgent.blockingReceive(mt);
 	if (msg != null) {		
 		if (msg.getOntology() == QueryOntology.NAME)
 		{

@@ -1,29 +1,21 @@
 package main.jadrin.bartender;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.LinkedList;
-import java.util.List;
 
-import main.jadrin.ontology.CheckElement;
+
 import main.jadrin.ontology.Drink;
-import main.jadrin.ontology.DrinkOntology;
 import main.jadrin.ontology.DrinkRequest;
 import main.jadrin.ontology.DrinkResponse;
 import main.jadrin.ontology.DrinkResponseType;
-import main.jadrin.ontology.Ingredient;
+
 import jade.content.AgentAction;
 import jade.content.ContentElement;
 import jade.content.lang.Codec.CodecException;
 import jade.content.onto.OntologyException;
-import jade.content.onto.UngroundedException;
 import jade.content.onto.basic.Action;
-import jade.core.Agent;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
-import jade.lang.acl.MessageTemplate;
+
 
 public class HandleDrinkRequest extends OneShotBehaviour {
 

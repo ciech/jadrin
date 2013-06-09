@@ -1,9 +1,6 @@
 package main.jadrin.bartender;
 
-import java.util.LinkedList;
-
 import main.jadrin.ontology.CheckElement;
-import main.jadrin.ontology.Drink;
 import main.jadrin.ontology.QueryOntology;
 import jade.content.AgentAction;
 import jade.content.ContentElement;
@@ -11,11 +8,8 @@ import jade.content.lang.Codec.CodecException;
 import jade.content.onto.OntologyException;
 import jade.content.onto.UngroundedException;
 import jade.content.onto.basic.Action;
-import jade.core.Agent;
-import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.lang.acl.ACLMessage;
-import jade.lang.acl.MessageTemplate;
 
 public class HandleCheckElement extends OneShotBehaviour {
 
