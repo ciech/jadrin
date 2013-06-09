@@ -68,7 +68,7 @@ public final class WaiterAgentGui extends JFrame {
    	    response.setEditable(false);
    	    
    	    JScrollPane  responsePane = new JScrollPane(response);
-	   	responsePane.setPreferredSize(new Dimension(600, 250));
+	   	responsePane.setPreferredSize(new Dimension(600, 500));
 	   	responsePane.setBorder(
 	   		BorderFactory.createCompoundBorder(
 	   			BorderFactory.createCompoundBorder(
