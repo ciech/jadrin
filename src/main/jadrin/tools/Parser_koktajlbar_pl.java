@@ -16,7 +16,7 @@ import org.jsoup.select.Elements;
 public class Parser_koktajlbar_pl implements PageParser{
 
 	static public String PAGE_TO_PARSE = "http://www.koktajlbar.pl/cgi-bin/search2.cgi?Q=g4&P=1&RP=101";
-	static public String PARSER_NAME = "koktajl_pl";
+	static public String PARSER_NAME = "koktajlbar_pl";
 	
 	static ArrayList<Drink> drinkCache = null;
 	
@@ -44,6 +44,12 @@ public class Parser_koktajlbar_pl implements PageParser{
 			}
 			
 			String title = titleTemp.substring(0, titleEnd);
+			title=title.replace("'", "");
+			title=title.replace("\"", "");
+			title = title.replace("`","");
+			
+			title = AlphabetNormalizer.unAccent(title.replace("&oacute;", "o"));
+			
 			drink.setName(title);
 			
 			String text = descOne.html();
@@ -55,6 +61,10 @@ public class Parser_koktajlbar_pl implements PageParser{
 			Document temp = Jsoup.parse(text);
 			text = temp.text();
 			text = AlphabetNormalizer.unAccent(text.replace("&oacute;", "o"));
+			text=text.replace("'", "");
+			text=text.replace("\"", "");
+			text = text.replace("`","");
+			
 			String[] ingredients = text.split("\\|");
 			ArrayList<Ingredient> ingren = new ArrayList<Ingredient>();
 			for(String ing : ingredients)
@@ -79,6 +89,9 @@ public class Parser_koktajlbar_pl implements PageParser{
 			Recipe recipe = new Recipe();
 			String recStr = rec.ownText();
 			recStr = AlphabetNormalizer.unAccent(recStr.replace("&oacute;", "o"));
+			recStr=recStr.replace("'", "");
+			recStr=recStr.replace("\"", "");
+			recStr = recStr.replace("`","");
 			recipe.setContent(recStr);
 			drink.setRecipe(recipe);
 			return drink;

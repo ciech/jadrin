@@ -88,20 +88,20 @@ public class BartenderAgent extends Agent {
 
 	protected void setup() 
 	{ 	
-		System.out.println("Barman setup");
+		System.out.println(this.getLocalName()+ ": Barman setup");
 		File temp = null;
 		PageParser parser = ParserFactory.getParser(this.getLocalName());
 		
 		if (parser == null)
 		{
-			System.out.println("There is no knowledge connected to barman name: " +this.getLocalName() );
-			System.out.println("Destroing barman");
+			System.out.println(this.getLocalName() +":There is no knowledge connected to barman name: " +this.getLocalName() );
+			System.out.println(this.getLocalName() +":Destroing barman");
 			doDelete();
 		}
 		else
 		{
 		
-			System.out.println("Barman getting data from " + this.getLocalName());
+			System.out.println(this.getLocalName() +":Barman getting data from " + this.getLocalName());
 			temp = new File(this.getLocalName()+".pro");
 			if (!temp.exists())
 			{
@@ -130,7 +130,7 @@ public class BartenderAgent extends Agent {
 			getContentManager().registerLanguage(codec);
 			getContentManager().registerOntology(queryOntology);
 			getContentManager().registerOntology(drinkOntology);
-			System.out.println("Building Prolog DataBase");
+			System.out.println(this.getLocalName() + ":Building Prolog Database");
 			//Prolog setup:
 			this.environment =  new Environment();
 	
@@ -147,7 +147,7 @@ public class BartenderAgent extends Agent {
 			this.interpreter = environment.createInterpreter();
 			environment.runInitialization(interpreter);
 			//    	
-			System.out.println("Barman ready");
+			System.out.println(this.getLocalName() + ":Barman ready");
 			registerService();
 			addBehaviour(new CommunicateBehaviour(this)); // handles A,B and C case from documentation
 		}
