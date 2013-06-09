@@ -15,6 +15,7 @@ import org.jsoup.nodes.Element;
 public class Parser_drinkuj_pl implements PageParser{
 
 	static public String PAGE_TO_PARSE = "http://www.drinkuj.pl/spis.php";
+	static public String PARSER_NAME = "drinkuj_pl";
 	
 	static ArrayList<Drink> drinkCache = null;
 			
@@ -70,7 +71,7 @@ public class Parser_drinkuj_pl implements PageParser{
 			Element recipe = potencialRecipe.get(0);
 
 			String recipeStr = AlphabetNormalizer.unAccent(recipe.ownText().replace("&oacute;", "o"));
-			recipeStr.replace("'", "\'");
+			recipeStr.replace("'", "");
 			Recipe recipeToDrink = new Recipe();
 			//recipeToDrink.setContent(ingList+"\n"+"Sposob przygotowania:\n"+recipeStr);
 			recipeToDrink.setContent(recipeStr);
@@ -146,5 +147,9 @@ public class Parser_drinkuj_pl implements PageParser{
 			drinkCache = Parser_drinkuj_pl.parseListPage();
 		}
 		return drinkCache;
+	}
+
+	public String getParserName() {
+		return PARSER_NAME;
 	}
 }
