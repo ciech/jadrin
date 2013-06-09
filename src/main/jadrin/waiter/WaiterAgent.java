@@ -1,5 +1,7 @@
 package main.jadrin.waiter;
 
+import java.awt.event.WindowEvent;
+
 import main.jadrin.ontology.DrinkOntology;
 import main.jadrin.ontology.QueryOntology;
 import jade.content.lang.Codec;
@@ -12,6 +14,7 @@ import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAAgentManagement.Property;
+import jade.wrapper.ControllerException;
 
 public class WaiterAgent extends Agent { 
 
@@ -61,8 +64,23 @@ public class WaiterAgent extends Agent {
     	}
      	return aids;
     }
+    
+    public void close()
+    {
+		try {
+			getContainerController().getPlatformController().kill();
+		} catch (ControllerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
 
 	public void analizeQuestion(String text) {
+		if(text.toLowerCase().equals("papa"))
+		{	
+			gui.done();
+			close();
+		}
 		AID bartenders[] = getBartendersList();
 		if (bartenders != null) {
 			addBehaviour(new BuildQueryBehaviour(this,text,bartenders,gui));

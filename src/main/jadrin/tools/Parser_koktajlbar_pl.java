@@ -2,12 +2,9 @@ package main.jadrin.tools;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-
 import main.jadrin.ontology.Drink;
 import main.jadrin.ontology.Ingredient;
 import main.jadrin.ontology.Recipe;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
