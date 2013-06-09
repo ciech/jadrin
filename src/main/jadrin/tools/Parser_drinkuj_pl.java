@@ -71,9 +71,11 @@ public class Parser_drinkuj_pl implements PageParser{
 			Element recipe = potencialRecipe.get(0);
 
 			String recipeStr = AlphabetNormalizer.unAccent(recipe.ownText().replace("&oacute;", "o"));
-			recipeStr.replace("'", "");
+			recipeStr = recipeStr.replace("\"","");
+			recipeStr = recipeStr.replace("'", "");
+			recipeStr = recipeStr.replace("`", "");
+			
 			Recipe recipeToDrink = new Recipe();
-			//recipeToDrink.setContent(ingList+"\n"+"Sposob przygotowania:\n"+recipeStr);
 			recipeToDrink.setContent(recipeStr);
 			drink.setRecipe(recipeToDrink);
 			return drink;

@@ -16,24 +16,14 @@ import main.jadrin.ontology.DrinkOntology;
 import main.jadrin.ontology.Ingredient;
 import main.jadrin.ontology.QueryOntology;
 import main.jadrin.ontology.Type;import main.jadrin.tools.PageParser;
-import main.jadrin.tools.Parser_drinkuj_pl;
-import gnu.prolog.database.PrologTextLoader;
-import gnu.prolog.database.PrologTextLoaderState;
-import gnu.prolog.io.ParseException;
-import gnu.prolog.io.TermReader;
 import gnu.prolog.term.AtomTerm;
 import gnu.prolog.term.CompoundTerm;
-import gnu.prolog.term.DoubleQuotesTerm;
-import gnu.prolog.term.IntegerTerm;
 import gnu.prolog.term.Term;
 import gnu.prolog.term.VariableTerm;
 import gnu.prolog.vm.Environment;
-import gnu.prolog.vm.Evaluate;
 import gnu.prolog.vm.Interpreter;
-import gnu.prolog.vm.Interpreter.Goal;
 import gnu.prolog.vm.PrologCode;
 import gnu.prolog.vm.PrologException;
-import jade.content.Concept;
 import jade.content.lang.Codec;
 import jade.content.lang.sl.SLCodec;
 import jade.content.onto.Ontology;
@@ -344,8 +334,7 @@ public class BartenderAgent extends Agent {
 		}
 
 		if(rc ==PrologCode.SUCCESS || rc == PrologCode.SUCCESS_LAST){
-			Term missingIngredientsDeref = missingIngredients.dereference();
-			Term recipeDeref = recipe.dereference();		
+				Term recipeDeref = recipe.dereference();		
 			return createDrink(drinkName,missingIngredients, recipeDeref);
 		}
 		return null;

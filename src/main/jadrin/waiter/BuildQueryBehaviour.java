@@ -1,7 +1,5 @@
-	package main.jadrin.waiter;
+package main.jadrin.waiter;
 
-import java.nio.charset.Charset;
-import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -259,7 +257,7 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 		ACLMessage query = new ACLMessage(ACLMessage.REQUEST);
 		query.setOntology(DrinkOntology.NAME);
 		query.setLanguage(((WaiterAgent)myAgent).getCodecName());
-
+		LinkedList<Drink> results = new LinkedList<Drink>();
 		AgentAction act = null;
 		DrinkResponse response = null;
 		for(AID bartender: bartenders)
@@ -295,9 +293,14 @@ public class BuildQueryBehaviour extends OneShotBehaviour {
 				
 				if(response.getType() != DrinkResponseType.UNKNOWN)
 				{
-					return response.getResults();
+					results.addAll(response.getResults());
 				}
 					
+		}
+		
+		if(results.size()>0)
+		{
+			return results;
 		}
 		return null;
 	}
