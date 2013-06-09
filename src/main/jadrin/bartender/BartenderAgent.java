@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import main.jadrin.tools.ParserFactory;
 import main.jadrin.ontology.CheckElement;
 import main.jadrin.ontology.Drink;
 import main.jadrin.ontology.DrinkOntology;
@@ -86,17 +87,24 @@ public class BartenderAgent extends Agent {
 	}
 
 	protected void setup() 
-	{ 		System.out.println("Barman setup");
+	{ 	
+		System.out.println("Barman setup");
 		File temp = null;
-		if ("drinkuj_pl".equals(this.getLocalName()))
+		PageParser parser = ParserFactory.getParser(this.getLocalName());
+		
+		if (parser == null)
 		{
-			
-			 
-			System.out.println("Barman getting data from drinkuj_pl");
-			temp = new File("drinkuj_pl.pro");
+			System.out.println("There is no knowledge connected to barman name: " +this.getLocalName() );
+			System.out.println("Destroing barman");
+			doDelete();
+		}
+		else
+		{
+		
+			System.out.println("Barman getting data from " + this.getLocalName());
+			temp = new File(this.getLocalName()+".pro");
 			if (!temp.exists())
 			{
-				PageParser parser= new Parser_drinkuj_pl();
 				ArrayList<Drink> drinks = parser.parsePage();
 				try{
 				
@@ -117,36 +125,32 @@ public class BartenderAgent extends Agent {
 					e1.printStackTrace();
 				}
 			}
+	     	
+	
+			getContentManager().registerLanguage(codec);
+			getContentManager().registerOntology(queryOntology);
+			getContentManager().registerOntology(drinkOntology);
+			System.out.println("Building Prolog DataBase");
+			//Prolog setup:
+			this.environment =  new Environment();
+	
+			if (null != temp)
+			{
+				environment.ensureLoaded(AtomTerm.get(temp.getPath()));
+			}
+			
+			URL rulesFile = getClass().getResource("/main/jadrin/resources/rules.pro");
+			environment.ensureLoaded(AtomTerm.get(rulesFile.getFile()));
+	
+	
+	
+			this.interpreter = environment.createInterpreter();
+			environment.runInitialization(interpreter);
+			//    	
+			System.out.println("Barman ready");
+			registerService();
+			addBehaviour(new CommunicateBehaviour(this)); // handles A,B and C case from documentation
 		}
-
-		getContentManager().registerLanguage(codec);
-		getContentManager().registerOntology(queryOntology);
-		getContentManager().registerOntology(drinkOntology);
-		System.out.println("Building Prolog DataBase");
-		//Prolog setup:
-		this.environment =  new Environment();
-
-		
-
-		
-		//URL knowledgeFile = getClass().getResource("/main/jadrin/resources/knowledge.pro");
-		//environment.ensureLoaded(AtomTerm.get(knowledgeFile.getFile()));
-		if (null != temp)
-		{
-			environment.ensureLoaded(AtomTerm.get(temp.getPath()));
-		}
-		
-		URL rulesFile = getClass().getResource("/main/jadrin/resources/rules.pro");
-		environment.ensureLoaded(AtomTerm.get(rulesFile.getFile()));
-
-
-
-		this.interpreter = environment.createInterpreter();
-		environment.runInitialization(interpreter);
-		//    	
-		System.out.println("Barman ready");
-		registerService();
-		addBehaviour(new CommunicateBehaviour(this)); // handles A,B and C case from documentation
 	}
 
 	public CheckElement whatIsThat(CheckElement check){

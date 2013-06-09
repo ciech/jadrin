@@ -148,4 +148,8 @@ public class Parser_drinkuj_pl implements PageParser{
 		}
 		return drinkCache;
 	}
+
+	public String getParserName() {
+		return PARSER_NAME;
+	}
 }
