@@ -1,8 +1,17 @@
 %rules
 %not_empty(L) :- E=[], L\=E.
 
-member_rec(M, [M|_]) :- true.
-member_rec(M, [H|T]) :- ( member_rec(M,T) ; member_rec(M,H) ).
+my_prefix(X, L) :- append(X, _, L).
+my_suffix(X, L) :- append(_, X, L).
+my_sublist(X, L) :- my_suffix(S, L), my_prefix(X, S).
+
+
+%my_sublist([],[]).
+%my_sublist([First|Rest],[First|Sub]):-my_sublist(Rest,Sub).
+%my_sublist([_|Rest],Sub):-my_sublist(Rest,Sub).
+
+member_rec(M, [M|_]) :- true .
+member_rec(M, [H|T]) :- ( member_rec(M,T) ; member_rec(M,H) ) ; my_sublist(M,[H|T])  .
 
 
 remove(X, [X|Ogon], Ogon).

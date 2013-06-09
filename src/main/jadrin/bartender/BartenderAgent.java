@@ -170,15 +170,19 @@ public class BartenderAgent extends Agent {
 		CompoundTerm goalTermIngredient = new CompoundTerm(AtomTerm.get("is_ingredient"), args1);
 		CompoundTerm goalTermDrink = new CompoundTerm(AtomTerm.get("is_drink"), args1);
 		CompoundTerm goalTermPartOf = new CompoundTerm(AtomTerm.get("is_part_of"), args);
-
+		//Term[] args2 = {AtomTerm.get("[[sex],[on]]"), AtomTerm.get("[[sex],[on],[the],[beach]]")};
+		//CompoundTerm goalSublist = new CompoundTerm(AtomTerm.get("my_sublist"), args2);
+		
 		for (Term term : args1)
 		{
 			System.out.print(term +",");
 		}
+		//int isSublist =  PrologCode.FAIL;
 		int isIngredient = PrologCode.FAIL;
 		int isDrink = PrologCode.FAIL;
 		int isPartOf =PrologCode.FAIL;
 		try {
+		//	isSublist = interpreter.runOnce(goalSublist);
 			isIngredient = interpreter.runOnce(goalTermIngredient);
 			isDrink = interpreter.runOnce(goalTermDrink);
 			isPartOf = interpreter.runOnce(goalTermPartOf);			
