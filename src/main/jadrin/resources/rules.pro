@@ -11,7 +11,7 @@ my_sublist(X, L) :- my_suffix(S, L), my_prefix(X, S).
 %my_sublist([_|Rest],Sub):-my_sublist(Rest,Sub).
 
 member_rec(M, [M|_]) :- true .
-member_rec(M, [H|T]) :- ( member_rec(M,T) ; member_rec(M,H) ) ; my_sublist(M,[H|T])  .
+member_rec(M, [H|T]) :- ( member_rec(M,T) ; member_rec(M,H) ) ; (my_sublist(M,[H|T]) ) .
 
 
 remove(X, [X|Ogon], Ogon).
@@ -23,7 +23,7 @@ deletelist([X|Xs], Y, Z) :- member(X, Y), deletelist(Xs, Y, Z), !.
 deletelist([X|Xs], Y, [X|Zs]) :- deletelist(Xs, Y, Zs).
 %============================================================================
 %============================================================================
-%Ptanie zero - co to jest za typ?
+%Pytanie zero - co to jest za typ?
 %is_ingredient(I) :- ingredients(N, S), member_rec(I,S), write(I), write(S).
 %is_drink(I) :- ingredients(N,S), member_rec(I,N), write(I), write(N).
 
@@ -35,9 +35,14 @@ is_part_of(I) :- (is_part_of_ingredient(I)  ; is_part_of_drink(I)) .
 is_part_of_ingredient(I) :- (ingredients(N, S), member_rec(I,S), \+ (member(I,S))).
 is_part_of_drink(I) :-  ( ingredients(N,S), member_rec(I,N), I\==N ).
 
+test1(I) :- (ingredients(N, S), member_rec(I,S)).
+test2(I) :- (ingredients(N, S), \+ (member(I,S))).
+
 is_drink(I) :- ingredients(N,S), I == N.
 
-is_ingredient(I) :- ingredients(N, S), member_rec(I,S) , \+ is_part_of_ingredient(I).
+is_ingredient(I) :- ingredients(N, S), member(I, S).
+% member_rec(I,S) TU!  .
+%, \+ is_part_of_ingredient(I).
 
 %===
 %A. Pytanie jak robi sie rum z cola?
