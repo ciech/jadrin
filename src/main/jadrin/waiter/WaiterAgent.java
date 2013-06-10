@@ -1,7 +1,5 @@
 package main.jadrin.waiter;
 
-import java.awt.event.WindowEvent;
-
 import main.jadrin.ontology.DrinkOntology;
 import main.jadrin.ontology.QueryOntology;
 import jade.content.lang.Codec;

@@ -3,7 +3,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,6 +45,8 @@ public class BartenderAgent extends Agent {
 	private Codec codec = new SLCodec();
 	private Ontology queryOntology = QueryOntology.getInstance();
 	private Ontology drinkOntology = DrinkOntology.getInstance();
+	
+	private String RULES_PATH = "rules.pro";
 
 	private static final String INVALID = "INVALID_INVALID_INVALID";
 
@@ -129,8 +130,7 @@ public class BartenderAgent extends Agent {
 				environment.ensureLoaded(AtomTerm.get(temp.getPath()));
 			}
 			
-			URL rulesFile = getClass().getResource("/main/jadrin/resources/rules.pro");
-			environment.ensureLoaded(AtomTerm.get(rulesFile.getFile()));
+			environment.ensureLoaded(AtomTerm.get(RULES_PATH));
 	
 	
 	
